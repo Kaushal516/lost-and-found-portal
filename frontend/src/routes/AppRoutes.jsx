@@ -1,66 +1,66 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
-import Search from "../pages/Search/Search";
-import AdminResolve from "../pages/AdminResolve/AdminResolve";
+import UsersList from "../pages/Dashboard/UsersList";
+import SearchFoundItems from "../pages/Search/SearchFoundItems";
 import ProtectedRoute from "./guards/ProtectedRoute";
 import AdminRoute from "./guards/AdminRoute";
 import Register from "../pages/Register/Register";
-import LostNew from "../pages/LostNew/LostNew";
 import { Navigate } from "react-router-dom";
-import FoundNew from "../pages/FoundNew/FoundNew";
+import PostFoundItem from "../pages/PostFoundItem/PostFoundItem";
+import PostLostItem from "../pages/PostLostItem/PostLostItem";
 import Chat from "../pages/Chat/Chat";
 import MyPosts from "../pages/MyPosts/MyPosts";
 import LostPublic from "../pages/LostPublic/LostPublic";
+import AdminClaims from "../pages/AdminClaims/AdminClaims";
+import AdminLostItems from "../pages/AdminLostItems/AdminLostItems";
+
+
+import Home from "../pages/Home/Home";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route
-      path="/found/new"
-      element={
-        <ProtectedRoute>
-           <FoundNew />
-        </ProtectedRoute>
-    }
+        path="/found/new"
+        element={
+          <ProtectedRoute>
+            <PostFoundItem />
+          </ProtectedRoute>
+        }
       />
       <Route
-      path="/lost/new"
-      element={
-        <ProtectedRoute>
-            <LostNew />
-        </ProtectedRoute>
+        path="/lost/new"
+        element={
+          <ProtectedRoute>
+            <PostLostItem />
+          </ProtectedRoute>
         }
       />
 
       <Route
-      path="/chat"
-      element={
-      <ProtectedRoute>
-        <Chat />
-      </ProtectedRoute>
-       }
-     />
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
-      path="/my-posts"
-      element={
-      <ProtectedRoute>
-        <MyPosts />
-      </ProtectedRoute>
-      }
-    />
-      <Route
-  path="/lost-items"
-  element={
-    <ProtectedRoute>
-      <LostPublic />
-    </ProtectedRoute>
-    }
-  />
+        path="/my-posts"
+        element={
+          <ProtectedRoute>
+            <MyPosts />
+          </ProtectedRoute>
+        }
+      />
+
 
 
       {/* User & Admin */}
@@ -68,7 +68,7 @@ const AppRoutes = () => {
         path="/search"
         element={
           <ProtectedRoute>
-            <Search />
+            <SearchFoundItems />
           </ProtectedRoute>
         }
       />
@@ -82,13 +82,29 @@ const AppRoutes = () => {
           </AdminRoute>
         }
       />
-
-      {/* Admin Resolve */}
       <Route
-        path="/admin/resolve"
+        path="/admin/users"
         element={
           <AdminRoute>
-            <AdminResolve />
+            <UsersList />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/claims"
+        element={
+          <AdminRoute>
+            <AdminClaims />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/lost-items"
+        element={
+          <AdminRoute>
+            <AdminLostItems />
           </AdminRoute>
         }
       />

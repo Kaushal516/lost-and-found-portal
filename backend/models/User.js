@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       match: [
         /^[a-zA-Z0-9_]+$/,
         "Username can only contain letters, numbers, and underscores"
-       ]
+      ]
     },
     email: {
       type: String,
@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6
+    },
+    resetPasswordOtp: {
+      type: String,
+      required: false
+    },
+    resetPasswordExpire: {
+      type: Date,
+      required: false
     }
   },
   { timestamps: true }

@@ -1,14 +1,26 @@
 import express from "express";
 import {
   createLostItem,
-  getAllLostItems
+  getAllLostItems,
+  getLostItems,
+  resolveLostItem
 } from "../controllers/lostItemController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { memoryUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-// Protected routes
-router.post("/", protect, createLostItem);
-router.get("/all", protect, getAllLostItems);
+router.post(
+  "/",
+  protect,
+  memoryUpload.array("images", 5),
+  createLostItem
+);
+
+router.get("/", protect, getAllLostItems);
+
+// Admin routes
+router.get("/admin", protect, adminOnly, getLostItems);
+router.put("/:id/resolve", protect, adminOnly, resolveLostItem);
 
 export default router;

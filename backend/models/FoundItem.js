@@ -27,10 +27,20 @@ const foundItemSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
+    claimedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null
+    },
     status: {
       type: String,
-      enum: ["active", "claimed", "resolved"],
+      enum: ["active", "In Process", "resolved"],
       default: "active"
+    },
+    resolvedAt: {
+      type: Date,
+      default: null,
+      index: { expireAfterSeconds: 432000 } // 5 days
     },
     images: {
       type: [String],

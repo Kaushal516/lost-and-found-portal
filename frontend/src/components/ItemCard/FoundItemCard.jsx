@@ -1,46 +1,92 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { formatFoundStatus } from "../utils/statusMapper";
+import api from "../../utils/api";
+import useAuth from "../../hooks/useAuth";
+import ImageCarousel from "../ImageCarousel/ImageCarousel";
+import ContactModal from "../ContactModal/ContactModal";
+import { formatFoundStatus } from "../../utils/statusMapper";
 import styles from "./ItemCard.module.css";
 
-const FoundItemCard = ({ item }) => {
+const FoundItemCard = ({ item, currentUserId }) => {
+  const [showContact, setShowContact] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+
   if (!item) return null;
+
+  const posterId = item.postedBy?._id ?? item.postedBy;
+  const isOwner = currentUserId && String(posterId) === String(currentUserId);
+  const [itemStatus, setItemStatus] = useState(item.status || "active");
+
+  const handleClaim = async () => {
+    try {
+      if (!currentUserId) {
+        alert("Please login to claim this item");
+        return;
+      }
+      const res = await api.put(`/found/${item._id}/claim`);
+      setItemStatus(res.data.status); // Should be "In Process"
+    } catch (err) {
+      console.error("Failed to claim item", err);
+      alert(err.response?.data?.message || "Failed to claim item");
+    }
+  };
+
+  const isClaimable = itemStatus === "active";
+  const btnText = itemStatus === "active" ? "Claim" : (itemStatus === "resolved" ? "Resolved" : "Claimed");
 
   return (
     <div className={styles.card}>
-      {/* Header */}
+      {item.images?.length > 0 && (
+        <ImageCarousel images={item.images} />
+      )}
+
       <div className={styles.header}>
-        <h4 className={styles.title}>{item.title}</h4>
-        <span className={styles.status}>
-          {formatFoundStatus(item.status)}
+        <h3 className={styles.title}>{item.title}</h3>
+        <span className={`${styles.status} ${itemStatus === "active"
+          ? styles.statusActive
+          : itemStatus === "In Process"
+            ? styles.statusProcess
+            : styles.statusResolved
+          }`}>
+          {formatFoundStatus(itemStatus)}
         </span>
       </div>
 
-      {/* Body */}
       <div className={styles.body}>
-        <p>📍 {item.location || "Location not specified"}</p>
-
+        <p><strong>Category:</strong> {item.category}</p>
+        <p><strong>Location:</strong> {item.location}</p>
         <p>
-          🗓️ Found on:{" "}
-          {item.dateFound
-            ? new Date(item.dateFound).toLocaleDateString()
-            : "Unknown"}
+          <strong>Found on:</strong>{" "}
+          {new Date(item.dateFound).toLocaleDateString()}
         </p>
-
-        <p>✉️ {item.postedBy?.email || "Email not available"}</p>
       </div>
 
-      {/* Footer */}
       <div className={styles.footer}>
-        <button
-          className={styles.chatBtn}
-          onClick={() =>
-            navigate(`/chat?item=${item._id}&type=found`)
-          }
-        >
-          💬 Chat
-        </button>
+        {!isAdmin && (
+          <button
+            className={styles.contactBtn}
+            onClick={handleClaim}
+            disabled={!isClaimable || isOwner}
+            title={
+              isOwner
+                ? "You cannot claim your own item"
+                : isClaimable
+                  ? "Click to claim this item"
+                  : "This item is already claimed or resolved"
+            }
+          >
+            {isOwner ? "Your Item" : btnText}
+          </button>
+        )}
       </div>
+
+      {showContact && (
+        <ContactModal
+          user={item.postedBy}
+          onClose={() => setShowContact(false)}
+        />
+      )}
     </div>
   );
 };

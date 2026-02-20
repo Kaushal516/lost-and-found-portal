@@ -5,11 +5,11 @@ const chatSchema = new mongoose.Schema(
     item: {
       type: mongoose.Schema.Types.ObjectId,
       refPath: "itemModel",
-      required: true
+      required: false
     },
     itemModel: {
       type: String,
-      required: true,
+      required: false,
       enum: ["LostItem", "FoundItem"]
     },
     participants: [
@@ -20,8 +20,7 @@ const chatSchema = new mongoose.Schema(
     ],
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Admin",
-      required: true
+      ref: "Admin"
     }
   },
   { timestamps: true }

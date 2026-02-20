@@ -1,0 +1,44 @@
+.picker {
+  position: absolute;
+  z-index: 100;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+  padding: 0.5rem;
+  max-width: 280px;
+}
+
+.picker.above {
+  bottom: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.picker.below {
+  top: 100%;
+  margin-top: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.25rem;
+}
+
+.emojiBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.emojiBtn:hover {
+  background: var(--gray-100);
+}

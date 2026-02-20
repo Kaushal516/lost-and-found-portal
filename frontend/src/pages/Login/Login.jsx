@@ -51,49 +51,65 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2>Login</h2>
+    <div className={styles.authPage}>
+      <div className={styles.container}>
+        <h2>Login</h2>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Role Selection */}
-        <div className={styles.roleSwitch}>
-          <button
-            type="button"
-            className={role === "user" ? styles.active : ""}
-            onClick={() => setRole("user")}
-          >
-            User
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Role Selection */}
+          <div className={styles.roleSwitch}>
+            <button
+              type="button"
+              className={role === "user" ? styles.active : ""}
+              onClick={() => setRole("user")}
+            >
+              User
+            </button>
+
+            <button
+              type="button"
+              className={role === "admin" ? `${styles.active} ${styles.adminActive}` : ""}
+              onClick={() => setRole("admin")}
+            >
+              Admin
+            </button>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Email Address</label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && <p className={styles.error}>{error}</p>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
 
-          <button
-            type="button"
-            className={role === "admin" ? styles.active : ""}
-            onClick={() => setRole("admin")}
-          >
-            Admin
-          </button>
-        </div>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        {error && <p className={styles.error}>{error}</p>}
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          {role === "user" && (
+            <p className={styles.forgotPassword} onClick={() => navigate("/forgot-password")}>
+              Forgot Password?
+            </p>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

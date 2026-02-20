@@ -1,21 +1,36 @@
 import express from "express";
 import {
   createFoundItem,
-  getFoundItems
+  getAllFoundItems,
+  getFoundItems,
+  claimFoundItem,
+  rejectClaim,
+  resolveFoundItem
 } from "../controllers/foundItemController.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { memoryUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-/**
- * USER: create found item
- */
-router.post("/", protect, createFoundItem);
+// Create found item (with images)
+router.post(
+  "/",
+  protect,
+  memoryUpload.array("images", 5),
+  createFoundItem
+);
 
-/**
- * ADMIN: get found items (optionally by status)
- */
-router.get("/", protect, adminOnly, getFoundItems);
+// Get all found items (users)
+router.get("/", protect, getAllFoundItems);
+
+// Admin-only filtered list
+router.get("/admin", protect, adminOnly, getFoundItems);
+
+// Claim item
+router.put("/:id/claim", protect, claimFoundItem);
+
+// Admin actions
+router.put("/:id/reject", protect, adminOnly, rejectClaim);
+router.put("/:id/resolve", protect, adminOnly, resolveFoundItem);
 
 export default router;
-

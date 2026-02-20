@@ -1,10 +1,16 @@
+// 🔥 LOAD ENV FIRST (ESM-safe)
+import "dotenv/config";
+configDotenv();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import connectDB from "./db/connectDB.js";
 import http from "http";
+
+// DB & Socket
+import connectDB from "./db/connectDB.js";
 import setupSocket from "./socket/socket.js";
 
+// Routes
 import userAuthRoutes from "./routes/userAuthRoutes.js";
 import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 import lostItemRoutes from "./routes/lostItemRoutes.js";
@@ -15,19 +21,24 @@ import searchRoutes from "./routes/searchRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
 import userPostsRoutes from "./routes/userPostsRoutes.js";
-
-dotenv.config();
+import { configDotenv } from "dotenv";
 
 const app = express();
 
-// Connect Database
+/* =======================
+   DATABASE
+======================= */
 connectDB();
 
-// Middleware
+/* =======================
+   MIDDLEWARE
+======================= */
 app.use(cors());
 app.use(express.json());
 
-// Routes
+/* =======================
+   ROUTES
+======================= */
 app.use("/api/users", userAuthRoutes);
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/lost", lostItemRoutes);
@@ -39,12 +50,14 @@ app.use("/api/admin", dashboardRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/my-posts", userPostsRoutes);
 
+/* =======================
+   SERVER + SOCKET
+======================= */
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 
-// Setup Socket.IO
 setupSocket(server);
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });

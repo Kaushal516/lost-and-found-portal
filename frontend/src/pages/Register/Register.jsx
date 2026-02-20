@@ -43,8 +43,9 @@ const Register = () => {
         navigate("/login");
       }, 1500);
     } catch (err) {
+      console.error("Registration Error:", err);
       setError(
-        err.response?.data?.message || "Registration failed"
+        err.response?.data?.message || err.message || "Registration failed (Unknown Error)"
       );
     } finally {
       setLoading(false);
@@ -52,69 +53,104 @@ const Register = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2>Create Account</h2>
+    <div className={styles.authPage}>
+      <div className={styles.container}>
+        <h2>Create Account</h2>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <input
-          name="firstName"
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.inputGroup}>
+            <label>First Name</label>
+            <input
+              name="firstName"
+              placeholder="e.g. John"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          name="lastName"
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Last Name</label>
+            <input
+              name="lastName"
+              placeholder="e.g. Doe"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          name="username"
-          placeholder="Username (letters, numbers, _)"
-          value={formData.username}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Username</label>
+            <input
+              name="username"
+              placeholder="letters, numbers, _ (no spaces)"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              minLength={4}
+              maxLength={20}
+            />
+            <small className={styles.hint}>Must be 4-20 characters, no special symbols like @</small>
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="john@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          name="phoneNumber"
-          placeholder="Phone Number (admin only access)"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Phone Number</label>
+            <input
+              name="phoneNumber"
+              placeholder="10-digit mobile number"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+              maxLength={10}
+            />
+          </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Min 6 characters"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+            />
+          </div>
 
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
+          <div className={styles.inputGroup}>
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Re-enter password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        {error && <p className={styles.error}>{error}</p>}
-        {success && <p className={styles.success}>{success}</p>}
+          {error && <div className={styles.error}>{error}</div>}
+          {success && <div className={styles.success}>{success}</div>}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating account..." : "Register"}
-        </button>
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? "Creating account..." : "Register"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

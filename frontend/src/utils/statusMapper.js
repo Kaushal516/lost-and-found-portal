@@ -7,7 +7,7 @@ export const formatFoundStatus = (status) => {
 
   const map = {
     active: "Available",
-    claimed: "In Process",
+    "In Process": "In Process",
     resolved: "Returned"
   };
 
@@ -19,12 +19,13 @@ export const formatFoundStatus = (status) => {
  * to user-friendly labels
  */
 export const formatLostStatus = (status) => {
-  if (!status) return "";
+  if (!status) return "Active";
 
   const map = {
+    active: "Active",
     reported: "Reported Lost",
     resolved: "Returned"
   };
 
-  return map[status] || "";
+  return map[status] || "Active";
 };

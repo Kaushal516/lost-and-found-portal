@@ -1,53 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 :root {
-  /* Color Palette */
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #6366f1;
-  --secondary: #10b981;
-  --secondary-dark: #059669;
-  --danger: #ef4444;
-  --danger-dark: #dc2626;
+  /* HSL Color Palette - Premium & Harmonious */
+  --primary-h: 243;
+  --primary-s: 75%;
+  --primary-l: 59%;
+
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  --primary-hover: hsl(var(--primary-h), var(--primary-s), calc(var(--primary-l) - 10%));
+  --primary-light: hsl(var(--primary-h), var(--primary-s), calc(var(--primary-l) + 20%));
+
+  --secondary-h: 162;
+  --secondary-s: 84%;
+  --secondary-l: 39%;
+  --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
+  --secondary-hover: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) - 10%));
+  --secondary-dark: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) - 15%));
+  --secondary-light: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) + 20%));
+
+  --danger-h: 0;
+  --danger-s: 84%;
+  --danger-l: 60%;
+  --danger: hsl(var(--danger-h), var(--danger-s), var(--danger-l));
+
+  --success: var(--secondary);
   --warning: #f59e0b;
-  --success: #10b981;
-  
-  /* Grays */
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  
+
+  /* Neutrals */
+  --gray-h: 220;
+  --gray-50: hsl(var(--gray-h), 20%, 98%);
+  --gray-100: hsl(var(--gray-h), 14%, 96%);
+  --gray-200: hsl(var(--gray-h), 14%, 92%);
+  --gray-300: hsl(var(--gray-h), 12%, 86%);
+  --gray-400: hsl(var(--gray-h), 10%, 75%);
+  --gray-500: hsl(var(--gray-h), 8%, 50%);
+  --gray-600: hsl(var(--gray-h), 10%, 40%);
+  --gray-700: hsl(var(--gray-h), 12%, 30%);
+  --gray-800: hsl(var(--gray-h), 14%, 20%);
+  --gray-900: hsl(var(--gray-h), 14%, 10%);
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(12px);
+  --navbar-height: 90px;
+
   /* Typography */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
-  
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+  --font-main: 'Outfit', sans-serif;
+
+  /* Layout */
+  --container-max: 1280px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
+
+  /* Shadows - Layered & Soft */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
+
   /* Transitions */
-  --transition-fast: 150ms ease-in-out;
-  --transition-base: 200ms ease-in-out;
-  --transition-slow: 300ms ease-in-out;
-  
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -56,64 +73,50 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: var(--font-main);
+  background: radial-gradient(circle at 0% 0%, #f5f7fa 0%, #e4e8ed 100%);
   background-attachment: fixed;
-  color: var(--gray-900);
+  color: var(--gray-800);
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
 a {
-  font-weight: 500;
-  color: var(--primary);
   text-decoration: none;
-  transition: color var(--transition-base);
+  color: inherit;
+  transition: var(--transition-base);
 }
 
-a:hover {
-  color: var(--primary-dark);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-weight: 600;
-  line-height: 1.2;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--gray-900);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-h1 {
-  font-size: 2.5rem;
-}
-
-h2 {
-  font-size: 2rem;
-}
-
-h3 {
-  font-size: 1.5rem;
-}
-
-h4 {
-  font-size: 1.25rem;
+/* Glassmorphism Utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
 }
 
 button {
-  border-radius: 8px;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  font-family: inherit;
+  font-family: var(--font-main);
   cursor: pointer;
-  transition: all var(--transition-base);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  border: none;
+  outline: none;
+  transition: var(--transition-base);
 }
 
 button:disabled {
@@ -121,14 +124,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -142,4 +140,41 @@ button:focus-visible {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-400);
+}
+
+/* Skeleton Loading UI */
+.skeleton {
+  background: var(--gray-200);
+  background: linear-gradient(110deg,
+      var(--gray-200) 8%,
+      var(--gray-100) 18%,
+      var(--gray-200) 33%);
+  border-radius: var(--radius-md);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.skeletonText {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.skeletonTitle {
+  height: 1.5rem;
+  margin-bottom: 1rem;
+  width: 60%;
+}
+
+.skeletonImage {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
 }

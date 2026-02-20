@@ -1,4 +1,13 @@
+
 import mongoose from "mongoose";
+
+const reactionSchema = new mongoose.Schema(
+  {
+    emoji: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true }
+  },
+  { _id: false }
+);
 
 const messageSchema = new mongoose.Schema(
   {
@@ -17,8 +26,19 @@ const messageSchema = new mongoose.Schema(
     },
     text: {
       type: String,
-      required: true
-    }
+      required: false // Not required if attachment exists
+    },
+    attachment: {
+      url: { type: String },
+      publicId: { type: String },
+      type: { type: String, default: 'image' }
+    },
+    reactions: {
+      type: [reactionSchema],
+      default: []
+    },
+    read: { type: Boolean, default: false },
+    readAt: { type: Date }
   },
   { timestamps: true }
 );

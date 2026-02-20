@@ -4,40 +4,63 @@ const lostItemSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
     },
+
     description: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
     },
-    status: {
-      type: String,
-      enum: ["reported", "matched", "resolved"],
-      default: "reported"
-    },
-    images: {
-      type: [String],
-      default: []
-    },
+
     category: {
       type: String,
-      required: true
+      required: true,
+      enum: [
+        "Electronics",
+        "Documents",
+        "Clothing",
+        "Accessories",
+        "Other",
+      ],
     },
+
     location: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
     },
+
     dateLost: {
       type: Date,
-      required: true
+      required: true,
     },
+
+    images: {
+      type: [String],
+      default: [],
+    },
+
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["active", "resolved"],
+      default: "active",
+    },
+    resolvedAt: {
+      type: Date,
+      default: null,
+      index: { expireAfterSeconds: 432000 }, // 5 days
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("LostItem", lostItemSchema);
+const LostItem = mongoose.model("LostItem", lostItemSchema);
+export default LostItem;

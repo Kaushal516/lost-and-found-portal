@@ -1,30 +1,38 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatLostStatus } from "../../utils/statusMapper";
+import ImageCarousel from "../ImageCarousel/ImageCarousel";
+import ContactModal from "../ContactModal/ContactModal";
 import styles from "./ItemCard.module.css";
 
-const LostItemCard = ({ item }) => {
+const LostItemCard = ({ item, currentUserId }) => {
   const navigate = useNavigate();
-
+  const [showContact, setShowContact] = useState(false);
   if (!item) return null;
 
-  const isReturned = item.status === "resolved";
+  const posterId = item.postedBy?._id ?? item.postedBy;
+  const isOwner = currentUserId && String(posterId) === String(currentUserId);
+  const status = item.status || "active";
+  const statusClass = status === "resolved" ? styles.statusResolved : styles.statusActive;
+  const isReturned = status === "resolved";
 
   return (
     <div className={styles.card}>
-      {/* Header */}
+      <ImageCarousel images={item.images || []} />
+
       <div className={styles.header}>
         <h4 className={styles.title}>
           {item.title || "Untitled Item"}
         </h4>
-        <span className={styles.status}>
-          {formatLostStatus(item.status)}
+        <span className={`${styles.status} ${statusClass}`}>
+          {formatLostStatus(status)}
         </span>
       </div>
 
-      {/* Body */}
       <div className={styles.body}>
         <p>
-          📍 {item.location || "Location not specified"}
+          📍 <strong>Last Seen Location:</strong>{" "}
+          {item.location || "Not specified"}
         </p>
 
         <p>
@@ -36,27 +44,30 @@ const LostItemCard = ({ item }) => {
 
         {isReturned && (
           <p>
-            ✅ Returned on:{" "}
+            ✅ <strong>Returned on:</strong>{" "}
             {new Date(item.updatedAt).toLocaleDateString()}
           </p>
         )}
-
-        <p>
-          ✉️ {item.postedBy?.email || "Email not available"}
-        </p>
       </div>
 
-      {/* Footer */}
       <div className={styles.footer}>
-        <button
-          className={styles.chatBtn}
-          onClick={() =>
-            navigate(`/chat?item=${item._id}&type=lost`)
-          }
-        >
-          💬 Chat
-        </button>
+        <div className={styles.footerButtons}>
+          <button
+            className={styles.contactBtn}
+            onClick={() => setShowContact(true)}
+          >
+            📞 Contact
+          </button>
+
+        </div>
       </div>
+
+      {showContact && (
+        <ContactModal
+          user={item.postedBy}
+          onClose={() => setShowContact(false)}
+        />
+      )}
     </div>
   );
 };
