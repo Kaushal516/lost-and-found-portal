@@ -58,6 +58,10 @@ const lostItemSchema = new mongoose.Schema(
       default: null,
       index: { expireAfterSeconds: 432000 }, // 5 days
     },
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );

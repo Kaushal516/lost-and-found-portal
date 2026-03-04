@@ -1,5 +1,9 @@
 import FoundItem from "../models/FoundItem.js";
+import Notification from "../models/Notification.js";
+import Admin from "../models/Admin.js";
 import { uploadImagesToCloudinary } from "../utils/uploadToCloudinary.js";
+import { extractTags } from "../utils/extractTags.js";
+import { sendNotificationToUser } from "../socket/socket.js";
 
 // CREATE FOUND ITEM (AUTH REQUIRED)
 export const createFoundItem = async (req, res) => {
@@ -12,28 +16,27 @@ export const createFoundItem = async (req, res) => {
       dateFound
     } = req.body;
 
-    // Images come from multer
+    // Images come from multer (req.files)
     const files = req.files || [];
 
-    // Found item MUST have at least 1 image
-    if (files.length < 1) {
-      return res.status(400).json({
-        message: "At least one image is required for found items"
-      });
-    }
-
-    // Max 5 images
+    // Max 5 images validation
     if (files.length > 5) {
       return res.status(400).json({
         message: "Maximum 5 images allowed"
       });
     }
 
-    // Upload images to Cloudinary
-    const imageUrls = await uploadImagesToCloudinary(
-      files,
-      "found-items"
-    );
+    if (files.length === 0) {
+      return res.status(400).json({
+        message: "At least 1 image is required for Found Item"
+      });
+    }
+
+    // Upload to Cloudinary
+    const imageUrls = await uploadImagesToCloudinary(files, "found-items");
+
+    // Auto-extract tags
+    const tags = extractTags(title, description);
 
     const foundItem = await FoundItem.create({
       title,
@@ -41,6 +44,7 @@ export const createFoundItem = async (req, res) => {
       category,
       location,
       dateFound,
+      tags,
       images: imageUrls,
       postedBy: req.user.id
     });
@@ -115,6 +119,36 @@ export const claimFoundItem = async (req, res) => {
 
     // Populate helpful fields
     await item.populate("postedBy", "firstName lastName email phoneNumber");
+    await item.populate("claimedBy", "firstName lastName email phoneNumber");
+
+    // 1. Notify the user who originally posted the Found Item
+    if (item.postedBy && item.postedBy._id.toString() !== req.user.id) {
+      const notif = await Notification.create({
+        recipient: item.postedBy._id,
+        type: "ITEM_CLAIMED",
+        message: `Your found item "${item.title}" has been claimed by ${item.claimedBy.firstName}.`,
+        link: `/dashboard`
+      });
+      sendNotificationToUser(item.postedBy._id.toString(), notif);
+    }
+
+    // 2. Notify Admins (Admins don't have Notification documents in this schema, so just socket)
+    try {
+      const admins = await Admin.find({});
+      admins.forEach(admin => {
+        const adminNotif = {
+          _id: new Date().getTime().toString(), // fake ID for key prop
+          type: "ITEM_CLAIMED",
+          message: `User ${item.claimedBy.firstName} claimed the item: "${item.title}".`,
+          createdAt: new Date(),
+          read: false,
+          link: `/admin/found-items`
+        };
+        sendNotificationToUser(admin._id.toString(), adminNotif);
+      });
+    } catch (adminErr) {
+      console.error("Error notifying admins:", adminErr);
+    }
 
     res.json(item);
   } catch (error) {

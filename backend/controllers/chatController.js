@@ -4,6 +4,8 @@ import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
 import Admin from "../models/Admin.js";
 import { getIO } from "../socket/ioInstance.js";
+import Notification from "../models/Notification.js";
+import { sendNotificationToUser } from "../socket/socket.js";
 import mongoose from "mongoose";
 
 /**
@@ -389,14 +391,26 @@ export const sendMessage = async (req, res) => {
     // Better: Just emit to ALL participants + Admin (except sender)
     // But we only have IDs.
 
-    chat.participants.forEach(pId => {
+    chat.participants.forEach(async pId => {
       if (pId.toString() !== req.user.id) {
         io.to(pId.toString()).emit("notification", populatedMessage);
+
+        // Persistent Notification
+        const notif = await Notification.create({
+          recipient: pId,
+          type: "NEW_MESSAGE",
+          message: `New message from ${req.user.type === "admin" ? "Admin" : req.user.username || "a user"}`,
+          relatedItem: chatId,
+          itemModel: "Chat",
+          link: "/chat"
+        });
+        sendNotificationToUser(pId.toString(), notif);
       }
     });
 
-    if (chat.admin.toString() !== req.user.id) {
+    if (chat.admin && chat.admin.toString() !== req.user.id) {
       io.to(chat.admin.toString()).emit("notification", populatedMessage);
+      // Wait to create notif for admin if needed, though they manage many chats.
     }
 
     return res.status(201).json(populatedMessage);

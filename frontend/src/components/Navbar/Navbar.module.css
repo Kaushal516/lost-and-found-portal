@@ -130,3 +130,22 @@
     width: 100%;
   }
 }
+
+.themeToggle {
+  background: transparent;
+  border: none;
+  color: var(--gray-600);
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.themeToggle:hover {
+  background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.1);
+  color: var(--primary);
+}

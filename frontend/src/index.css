@@ -44,6 +44,47 @@
   --glass-border: rgba(255, 255, 255, 0.3);
   --glass-blur: blur(12px);
   --navbar-height: 90px;
+}
+
+.dark {
+  /* HSL Color Palette - Dark Mode Adjustments */
+  --primary-h: 243;
+  --primary-s: 75%;
+  --primary-l: 65%;
+  /* Slightly lighter primarily for contrast in dark mode */
+
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  --primary-hover: hsl(var(--primary-h), var(--primary-s), calc(var(--primary-l) + 10%));
+  --primary-light: hsl(var(--primary-h), var(--primary-s), calc(var(--primary-l) - 20%));
+
+  --secondary-h: 162;
+  --secondary-s: 84%;
+  --secondary-l: 45%;
+  --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
+  --secondary-hover: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) + 10%));
+  --secondary-dark: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) - 15%));
+  --secondary-light: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) - 20%));
+
+  /* Neutrals - Inverted for Dark Mode */
+  --gray-h: 220;
+  --gray-50: hsl(var(--gray-h), 14%, 10%);
+  --gray-100: hsl(var(--gray-h), 14%, 15%);
+  --gray-200: hsl(var(--gray-h), 14%, 20%);
+  --gray-300: hsl(var(--gray-h), 12%, 30%);
+  --gray-400: hsl(var(--gray-h), 10%, 40%);
+  --gray-500: hsl(var(--gray-h), 8%, 50%);
+  --gray-600: hsl(var(--gray-h), 10%, 75%);
+  --gray-700: hsl(var(--gray-h), 12%, 86%);
+  --gray-800: hsl(var(--gray-h), 14%, 92%);
+  --gray-900: hsl(var(--gray-h), 20%, 98%);
+
+  /* Glassmorphism Tokens - Dark Mode */
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  /* Darker glass background */
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+:root {
 
   /* Typography */
   --font-main: 'Outfit', sans-serif;
@@ -84,6 +125,11 @@ body {
   color: var(--gray-800);
   min-height: 100vh;
   line-height: 1.6;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  background: radial-gradient(circle at 0% 0%, #0f172a 0%, #020617 100%);
 }
 
 a {
@@ -177,4 +223,18 @@ button:disabled {
   aspect-ratio: 16/9;
   border-radius: var(--radius-md);
   margin-bottom: 1rem;
+}
+
+/* Fix for Chrome autofill turning inputs white */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--gray-50) inset !important;
+  -webkit-text-fill-color: var(--gray-900) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

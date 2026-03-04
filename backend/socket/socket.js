@@ -82,4 +82,17 @@ const setupSocket = (server) => {
   });
 };
 
+// Helper for emitting notifications to specific users
+export const sendNotificationToUser = (userId, notification) => {
+  const socketId = userSocketMap[userId];
+  if (socketId) {
+    import('./ioInstance.js').then(({ getIO }) => {
+      const io = getIO();
+      if (io) {
+        io.to(socketId).emit("newNotification", notification);
+      }
+    });
+  }
+};
+
 export default setupSocket;

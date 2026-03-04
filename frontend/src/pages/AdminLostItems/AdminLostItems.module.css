@@ -80,13 +80,13 @@
     flex: 1;
     min-width: 200px;
     padding: 0.875rem 1.25rem;
-    border: 1.5px solid var(--gray-200);
+    border: 1.5px solid var(--gray-300);
     border-radius: var(--radius-md);
     font-size: 1rem;
-    background: white;
+    background: var(--glass-bg);
     font-family: inherit;
     transition: var(--transition-base);
-    color: var(--gray-700);
+    color: var(--gray-900);
 }
 
 .searchBar input:focus,

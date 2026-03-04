@@ -2,10 +2,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import useAuth from "../../hooks/useAuth";
 import logo from "../../assets/logo.png";
+import { useTheme } from "../../context/ThemeContext";
+import { Moon, Sun } from "lucide-react";
+import NotificationBell from "../NotificationBell/NotificationBell";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isAdmin } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -27,7 +31,7 @@ const Navbar = () => {
         {/* Public Links */}
         {!isAuthenticated && (
           <>
-            <NavLink to="/" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Home</NavLink>
+            <NavLink to="/" end className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Home</NavLink>
             <NavLink to="/login" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Login</NavLink>
             <NavLink to="/register" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Register</NavLink>
           </>
@@ -54,17 +58,23 @@ const Navbar = () => {
             {/* User Only */}
             {!isAdmin && (
               <>
+                <NavLink to="/lost" end className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Lost Items</NavLink>
                 <NavLink to="/lost/new" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Report Lost</NavLink>
                 <NavLink to="/found/new" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Post Found</NavLink>
                 <NavLink to="/my-posts" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>My Posts</NavLink>
               </>
             )}
 
+            <NotificationBell />
+
             <button onClick={handleLogout} className={styles.logout}>
               Logout
             </button>
           </>
         )}
+        <button onClick={toggleTheme} className={styles.themeToggle} aria-label="Toggle Dark Mode">
+          {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
       </div>
     </nav>
   );

@@ -42,6 +42,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/lost"
+        element={
+          <ProtectedRoute>
+            <LostPublic />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/chat"

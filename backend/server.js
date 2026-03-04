@@ -21,6 +21,7 @@ import searchRoutes from "./routes/searchRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
 import userPostsRoutes from "./routes/userPostsRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import { configDotenv } from "dotenv";
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/search", searchRoutes);
 app.use("/api/admin", dashboardRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/my-posts", userPostsRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 /* =======================
    SERVER + SOCKET
@@ -59,5 +61,5 @@ const server = http.createServer(app);
 setupSocket(server);
 
 server.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+   console.log(`✅ Server running on port ${PORT}`);
 });

@@ -1,0 +1,93 @@
+.carouselContainer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    width: 100%;
+}
+
+.carouselTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1rem;
+}
+
+.carouselWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.itemsScrollRow {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 1rem 0.5rem;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.itemsScrollRow::-webkit-scrollbar {
+    display: none;
+}
+
+.itemWrapper {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+    /* Use scale reduction so they feel slightly smaller */
+    transform: scale(0.95);
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+.itemWrapper:hover {
+    transform: scale(1);
+}
+
+.navBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    color: var(--gray-800);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s ease;
+}
+
+.navBtn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.leftBtn {
+    left: -20px;
+}
+
+.rightBtn {
+    right: -20px;
+}
+
+@media (max-width: 768px) {
+
+    .leftBtn,
+    .rightBtn {
+        display: none;
+        /* Hide buttons on mobile, rely on swipe */
+    }
+}

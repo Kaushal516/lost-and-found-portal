@@ -4,11 +4,13 @@ import api from "../../utils/api";
 import useAuth from "../../hooks/useAuth";
 import ImageCarousel from "../ImageCarousel/ImageCarousel";
 import ContactModal from "../ContactModal/ContactModal";
+import ItemDetailsModal from "../ItemDetailsModal/ItemDetailsModal";
 import { formatFoundStatus } from "../../utils/statusMapper";
 import styles from "./ItemCard.module.css";
 
 const FoundItemCard = ({ item, currentUserId }) => {
   const [showContact, setShowContact] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
 
@@ -18,7 +20,8 @@ const FoundItemCard = ({ item, currentUserId }) => {
   const isOwner = currentUserId && String(posterId) === String(currentUserId);
   const [itemStatus, setItemStatus] = useState(item.status || "active");
 
-  const handleClaim = async () => {
+  const handleClaim = async (e) => {
+    e.stopPropagation();
     try {
       if (!currentUserId) {
         alert("Please login to claim this item");
@@ -36,10 +39,12 @@ const FoundItemCard = ({ item, currentUserId }) => {
   const btnText = itemStatus === "active" ? "Claim" : (itemStatus === "resolved" ? "Resolved" : "Claimed");
 
   return (
-    <div className={styles.card}>
-      {item.images?.length > 0 && (
-        <ImageCarousel images={item.images} />
-      )}
+    <div className={styles.card} onClick={() => setShowDetails(true)} style={{ cursor: 'pointer' }}>
+      <div>
+        {item.images?.length > 0 && (
+          <ImageCarousel images={item.images} />
+        )}
+      </div>
 
       <div className={styles.header}>
         <h3 className={styles.title}>{item.title}</h3>
@@ -76,7 +81,7 @@ const FoundItemCard = ({ item, currentUserId }) => {
                   : "This item is already claimed or resolved"
             }
           >
-            {isOwner ? "Your Item" : btnText}
+            {isOwner ? "Your Post" : btnText}
           </button>
         )}
       </div>
@@ -86,6 +91,16 @@ const FoundItemCard = ({ item, currentUserId }) => {
           user={item.postedBy}
           onClose={() => setShowContact(false)}
         />
+      )}
+
+      {showDetails && (
+        <div>
+          <ItemDetailsModal
+            item={item}
+            type="found"
+            onClose={() => setShowDetails(false)}
+          />
+        </div>
       )}
     </div>
   );

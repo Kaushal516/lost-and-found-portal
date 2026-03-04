@@ -1,4 +1,5 @@
 import styles from "./MyPosts.module.css";
+import StatusTimeline from "../../components/StatusTimeline/StatusTimeline";
 
 const LostPosts = ({ items }) => {
   return (
@@ -33,12 +34,14 @@ const LostPosts = ({ items }) => {
                 <div className={styles.cardContent}>
                   <div className={styles.headerRow}>
                     <span className={styles.itemTitle}>{item.title}</span>
-                    <div className={`${styles.statusBadge} ${item.status === "resolved" ? styles.statusResolved : styles.statusActive}`}>
-                      {item.status || "active"}
-                    </div>
                   </div>
 
-                  <div className={styles.itemDate}>
+                  <StatusTimeline
+                    steps={["Submitted", "Searching", "Resolved"]}
+                    currentStepIndex={item.status === "resolved" ? 2 : 1}
+                  />
+
+                  <div className={styles.itemDate} style={{ marginTop: '1rem' }}>
                     <span>📅</span>
                     {formattedDate} at {formattedTime}
                   </div>

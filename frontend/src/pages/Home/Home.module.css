@@ -1,6 +1,6 @@
 .container {
     min-height: 100vh;
-    background-color: white;
+    background-color: var(--gray-50);
     font-family: var(--font-main);
 }
 
@@ -10,8 +10,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 6rem 8%;
-    background: radial-gradient(circle at top right, hsla(var(--primary-h), 100%, 95%, 0.5), transparent),
-        radial-gradient(circle at bottom left, hsla(var(--secondary-h), 100%, 95%, 0.5), transparent);
+    background: radial-gradient(circle at top right, hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.1), transparent),
+        radial-gradient(circle at bottom left, hsla(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.1), transparent);
     min-height: 90vh;
     overflow: hidden;
     position: relative;
@@ -96,9 +96,9 @@
 
 .secondaryBtn {
     padding: 1.25rem 2.5rem;
-    background: white;
+    background: var(--glass-bg);
     color: var(--gray-900);
-    border: 2px solid var(--gray-200);
+    border: 2px solid var(--gray-300);
     border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 800;
@@ -161,9 +161,9 @@
 .card2 {
     top: 160px;
     left: 100px;
-    background: var(--gray-900);
-    color: white;
-    border: none;
+    background: var(--gray-800);
+    color: var(--gray-50);
+    border: 1px solid var(--glass-border);
     animation: float 6s ease-in-out infinite 1.5s;
 }
 
@@ -187,7 +187,7 @@
 /* Features */
 .features {
     padding: 8rem 8%;
-    background: white;
+    background: var(--gray-50);
 }
 
 .sectionTitle {
@@ -209,15 +209,16 @@
     text-align: center;
     padding: 4rem 3rem;
     border-radius: var(--radius-xl);
-    background: var(--gray-50);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
     transition: var(--transition-smooth);
-    border: 1px solid transparent;
+    border: 1px solid var(--glass-border);
 }
 
 .featureCard:hover {
-    background: white;
+    background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05);
     box-shadow: var(--shadow-xl);
-    border-color: var(--gray-100);
+    border-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
     transform: translateY(-10px);
 }
 

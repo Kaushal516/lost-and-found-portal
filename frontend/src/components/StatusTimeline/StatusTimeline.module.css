@@ -1,0 +1,86 @@
+.timelineContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+}
+
+.stepWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+/* The circle indicator */
+.circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 2;
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+/* Label below the circle */
+.label {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* Connecting Line */
+.line {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    width: 100%;
+    height: 3px;
+    background: var(--gray-200);
+    z-index: 1;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+}
+
+/* States */
+.active .circle {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 0 4px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
+}
+
+.active .label {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.completed .circle {
+    background: var(--success);
+    color: white;
+}
+
+.completed .label {
+    color: var(--gray-800);
+}
+
+.lineCompleted {
+    background: var(--success);
+}
+
+/* Dark mode adjustments */
+:global(body.dark) .circle {
+    border-color: var(--glass-bg);
+}

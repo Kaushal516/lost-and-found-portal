@@ -5,14 +5,14 @@
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  background: #f9fafb;
+  background: transparent;
 }
 
 /* ===== FORM CARD ===== */
 .form {
   width: 100%;
   max-width: 600px;
-  background: #ffffff;
+  background: var(--gray-100);
   padding: 2.5rem;
   border-radius: 16px;
   box-shadow: var(--shadow-xl);
@@ -48,6 +48,7 @@
   border-radius: 10px;
   border: 2px solid var(--gray-200);
   background: var(--gray-50);
+  color: var(--gray-900);
   font-size: 1rem;
   transition: all 0.2s ease;
 }
@@ -57,7 +58,7 @@
 .select:focus {
   outline: none;
   border-color: var(--primary);
-  background: #ffffff;
+  background: var(--gray-100);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
@@ -182,6 +183,7 @@
   border-radius: 10px;
   border: 2px solid var(--gray-200);
   background: var(--gray-50);
+  color: var(--gray-900);
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.2s ease;
@@ -192,7 +194,7 @@
 .form textarea:focus {
   outline: none;
   border-color: var(--primary);
-  background: white;
+  background: var(--gray-100);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
@@ -270,7 +272,7 @@
   padding: 0.5rem 1.25rem;
   border-radius: 8px;
   border: 2px solid var(--secondary);
-  background: white;
+  background: var(--gray-100);
   color: var(--secondary);
   font-weight: 500;
   cursor: pointer;
@@ -280,4 +282,18 @@
 .chooseBtn:hover {
   background: var(--secondary);
   color: white;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .form {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .form h2 {
+    font-size: 1.5rem;
+  }
 }

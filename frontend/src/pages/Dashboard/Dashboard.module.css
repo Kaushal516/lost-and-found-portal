@@ -248,8 +248,8 @@
 }
 
 .userShortcut {
-  background: white;
-  border: 1px solid var(--gray-100);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   display: flex;

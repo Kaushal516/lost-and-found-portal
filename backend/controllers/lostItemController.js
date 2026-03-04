@@ -1,5 +1,6 @@
 import LostItem from "../models/LostItem.js";
 import { uploadImagesToCloudinary } from "../utils/uploadToCloudinary.js";
+import { extractTags } from "../utils/extractTags.js";
 
 // CREATE LOST ITEM (AUTH REQUIRED)
 export const createLostItem = async (req, res) => {
@@ -28,12 +29,16 @@ export const createLostItem = async (req, res) => {
         ? await uploadImagesToCloudinary(files, "lost-items")
         : [];
 
+    // Auto-extract tags
+    const tags = extractTags(title, description);
+
     const lostItem = await LostItem.create({
       title,
       description,
       category,
       location,
       dateLost,
+      tags,
       images: imageUrls,
       postedBy: req.user.id
     });

@@ -1,24 +1,16 @@
 import { useEffect, useRef } from "react";
-import { io } from "socket.io-client";
-
-const SOCKET_URL = "http://localhost:5000";
+import socket from "../socket";
 
 const useSocket = (userId) => {
-  const socketRef = useRef(null);
+  const socketRef = useRef(socket);
 
   useEffect(() => {
     if (!userId) return;
 
-    socketRef.current = io(SOCKET_URL, {
-      auth: {
-        token: localStorage.getItem("token")
-      }
-    });
-
-    socketRef.current.emit("setup", userId);
+    socket.emit("setup", userId);
 
     return () => {
-      socketRef.current.disconnect();
+      // Don't disconnect here either since it's shared!
     };
   }, [userId]);
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import ImageCarousel from "../../components/ImageCarousel/ImageCarousel";
+import StatusTimeline from "../../components/StatusTimeline/StatusTimeline";
 import styles from "./AdminClaims.module.css";
 
 const AdminClaims = () => {
@@ -176,6 +177,13 @@ const AdminClaims = () => {
                                     <p><strong>Category:</strong> {item.category}</p>
                                     <p><strong>Claimed By:</strong> {item.claimedBy?.firstName} {item.claimedBy?.lastName} ({item.claimedBy?.email})</p>
                                     <p><strong>Date Found:</strong> {new Date(item.dateFound).toLocaleDateString()}</p>
+
+                                    <div style={{ marginTop: '1.5rem', marginBottom: '1rem', maxWidth: '400px' }}>
+                                        <StatusTimeline
+                                            steps={["Submitted", "Claim Processing", "Resolved"]}
+                                            currentStepIndex={1}
+                                        />
+                                    </div>
                                 </div>
                                 <div className={styles.actions}>
                                     <div className={styles.chatBtns}>

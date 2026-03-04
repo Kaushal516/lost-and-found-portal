@@ -5,14 +5,23 @@ import FoundItem from "../models/FoundItem.js";
 **/
 export const searchFoundItems = async (req, res) => {
   try {
-    const { q, category, date } = req.query;
+    const { q, category, date, tags } = req.query;
 
     const filter = {
-      title: { $regex: q, $options: "i" } // partial + case-insensitive
+      title: { $regex: q || "", $options: "i" } // partial + case-insensitive
     };
 
     if (category && category !== "All") {
       filter.category = category;
+    }
+
+    if (tags) {
+      // Tags come as a comma-separated string e.g., "wallet,blue"
+      const tagsArray = tags.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+      if (tagsArray.length > 0) {
+        // Find items that have *all* of the requested tags in their tags array
+        filter.tags = { $all: tagsArray };
+      }
     }
 
     if (date) {

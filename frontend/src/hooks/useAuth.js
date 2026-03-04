@@ -1,4 +1,4 @@
-import{ jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const useAuth = () => {
   const token = localStorage.getItem("token");
@@ -7,7 +7,8 @@ const useAuth = () => {
     return {
       isAuthenticated: false,
       isAdmin: false,
-      user: null
+      user: null,
+      token: null
     };
   }
 
@@ -17,13 +18,15 @@ const useAuth = () => {
     return {
       isAuthenticated: true,
       isAdmin: decoded.type === "admin",
-      user: decoded
+      user: decoded,
+      token
     };
   } catch {
     return {
       isAuthenticated: false,
       isAdmin: false,
-      user: null
+      user: null,
+      token: null
     };
   }
 };
