@@ -9,13 +9,12 @@ import Register from "../pages/Register/Register";
 import { Navigate } from "react-router-dom";
 import PostFoundItem from "../pages/PostFoundItem/PostFoundItem";
 import PostLostItem from "../pages/PostLostItem/PostLostItem";
-import Chat from "../pages/Chat/Chat";
-import MyPosts from "../pages/MyPosts/MyPosts";
-import LostPublic from "../pages/LostPublic/LostPublic";
 import AdminClaims from "../pages/AdminClaims/AdminClaims";
 import AdminLostItems from "../pages/AdminLostItems/AdminLostItems";
-
-
+import AdminDeletionRequests from "../pages/Dashboard/AdminDeletionRequests";
+import Chat from "../pages/Chat/Chat";
+import Profile from "../pages/Profile/Profile";
+import LostPublic from "../pages/LostPublic/LostPublic";
 import Home from "../pages/Home/Home";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 
@@ -26,6 +25,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+
       <Route
         path="/found/new"
         element={
@@ -61,15 +61,13 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/my-posts"
+        path="/profile"
         element={
           <ProtectedRoute>
-            <MyPosts />
+            <Profile />
           </ProtectedRoute>
         }
       />
-
-
 
       {/* User & Admin */}
       <Route
@@ -113,6 +111,15 @@ const AppRoutes = () => {
         element={
           <AdminRoute>
             <AdminLostItems />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/deletion-requests"
+        element={
+          <AdminRoute>
+            <AdminDeletionRequests />
           </AdminRoute>
         }
       />

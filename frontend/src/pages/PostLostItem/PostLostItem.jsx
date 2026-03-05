@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 import styles from "./PostLostItem.module.css";
+import { useLanguage } from "../../context/LanguageContext";
 
 const PostLostItem = () => {
+  const { t } = useLanguage();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -28,7 +30,7 @@ const PostLostItem = () => {
       const combined = [...prev, ...selectedFiles];
 
       if (combined.length > 5) {
-        showPopup("Maximum 5 images allowed", "error");
+        showPopup(t('common.maxImgError'), "error");
         return prev;
       }
 
@@ -47,7 +49,7 @@ const PostLostItem = () => {
     e.preventDefault();
 
     if (!title || !description || !category || !location || !dateLost) {
-      showPopup("Please fill all required fields", "error");
+      showPopup(t('common.required'), "error");
       return;
     }
 
@@ -72,7 +74,7 @@ const PostLostItem = () => {
 
 
 
-      showPopup("Lost item posted successfully");
+      showPopup(t('common.success'));
       setTitle("");
       setDescription("");
       setCategory("");
@@ -80,7 +82,7 @@ const PostLostItem = () => {
       setDateLost("");
       setImages([]);
     } catch (error) {
-      showPopup(error.response?.data?.message || "Failed to post lost item", "error");
+      showPopup(error.response?.data?.message || t('post.failedToPostLost') || "Failed to post lost item", "error");
     } finally {
       setLoading(false);
     }
@@ -96,54 +98,52 @@ const PostLostItem = () => {
       )}
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <h2>Report Lost Item</h2>
+        <h2>{t('post.lostTitle')}</h2>
 
         <label htmlFor="title">
-          Item Title<span style={{ color: "red" }}> *</span>
+          {t('post.itemTitle')}<span style={{ color: "red" }}> *</span>
         </label>
         <input
           id="title"
           type="text"
-          placeholder="e.g. iPhone 13 Pro"
+          placeholder={t('post.itemTitlePlaceholder')}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <label htmlFor="category">
-          Category<span style={{ color: "red" }}> *</span>
+          {t('post.category')}<span style={{ color: "red" }}> *</span>
         </label>
         <select id="category" value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">Select category</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Documents">Documents</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Accessories">Accessories</option>
-          <option value="Other">Other</option>
+          <option value="">{t('post.selectCategory')}</option>
+          {["Electronics", "Documents", "Clothing", "Accessories", "Other"].map(cat => (
+            <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
+          ))}
         </select>
 
         <label htmlFor="description">
-          Description<span style={{ color: "red" }}> *</span>
+          {t('post.description')}<span style={{ color: "red" }}> *</span>
         </label>
         <textarea
           id="description"
-          placeholder="Provide detailed description"
+          placeholder={t('post.descPlaceholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <label htmlFor="location">
-          Last Seen Location<span style={{ color: "red" }}> *</span>
+          {t('post.location')}<span style={{ color: "red" }}> *</span>
         </label>
         <input
           id="location"
           type="text"
-          placeholder="Where was it lost?"
+          placeholder={t('post.lostLocPlaceholder')}
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
 
         <label htmlFor="dateLost">
-          Date Lost<span style={{ color: "red" }}> *</span>
+          {t('post.dateLost')}<span style={{ color: "red" }}> *</span>
         </label>
         <input
           id="dateLost"
@@ -154,7 +154,7 @@ const PostLostItem = () => {
 
         {/* ✅ IMAGE UPLOAD SECTION (MATCHES YOUR UI) */}
         <label className={styles.uploadLabel}>
-          Add Photo (Optional)
+          {t('post.addPhotos')} {t('post.optional')}
         </label>
 
         {/* Preview thumbnails */}
@@ -179,18 +179,18 @@ const PostLostItem = () => {
 
         <div className={styles.uploadBox}>
           <div className={styles.cameraIcon}></div>
-          <p>Upload photos to help others identify the item</p>
+          <p>{t('post.uploadPhotos')}</p>
 
           <button
             type="button"
             className={styles.chooseBtn}
             onClick={() => fileInputRef.current.click()}
           >
-            Choose Photos
+            {t('post.choosePhotos')}
           </button>
 
           <small>
-            Supports JPG, PNG, WEBP (Max 5 images)
+            {t('post.supportText')}
           </small>
 
           <input
@@ -204,7 +204,7 @@ const PostLostItem = () => {
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Submit Lost Item"}
+          {loading ? t('post.posting') : t('post.submitLost')}
         </button>
 
       </form>

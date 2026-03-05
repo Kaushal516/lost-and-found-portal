@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import api from "../../utils/api";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [role, setRole] = useState("user"); // user | admin
   const [email, setEmail] = useState("");
@@ -16,7 +18,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError("Email and password are required");
+      setError(t('auth.reqError'));
       return;
     }
 
@@ -43,7 +45,7 @@ const Login = () => {
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || "Login failed"
+        err.response?.data?.message || t('common.error')
       );
     } finally {
       setLoading(false);
@@ -53,7 +55,7 @@ const Login = () => {
   return (
     <div className={styles.authPage}>
       <div className={styles.container}>
-        <h2>Login</h2>
+        <h2>{t('auth.loginTitle')}</h2>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {/* Role Selection */}
@@ -63,7 +65,7 @@ const Login = () => {
               className={role === "user" ? styles.active : ""}
               onClick={() => setRole("user")}
             >
-              User
+              {t('auth.user')}
             </button>
 
             <button
@@ -71,15 +73,15 @@ const Login = () => {
               className={role === "admin" ? `${styles.active} ${styles.adminActive}` : ""}
               onClick={() => setRole("admin")}
             >
-              Admin
+              {t('auth.admin')}
             </button>
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Email Address</label>
+            <label>{t('auth.emailLabel')}</label>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -87,10 +89,10 @@ const Login = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Password</label>
+            <label>{t('auth.passwordLabel')}</label>
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder={t('auth.passwordPlaceholder')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -100,13 +102,18 @@ const Login = () => {
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? t('auth.loggingIn') : t('auth.loginBtn')}
           </button>
 
           {role === "user" && (
-            <p className={styles.forgotPassword} onClick={() => navigate("/forgot-password")}>
-              Forgot Password?
-            </p>
+            <div className={styles.footerLinks}>
+              <p className={styles.forgotPassword} onClick={() => navigate("/forgot-password")}>
+                {t('auth.forgotPassword')}
+              </p>
+              <p className={styles.noAccount}>
+                {t('auth.noAccount')} <span onClick={() => navigate("/register")}>{t('auth.registerTitle')}</span>
+              </p>
+            </div>
           )}
         </form>
       </div>

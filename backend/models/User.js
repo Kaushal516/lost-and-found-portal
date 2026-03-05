@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -48,10 +49,25 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpire: {
       type: Date,
       required: false
+    },
+    profileImg: {
+      type: String,
+      default: ""
+    },
+    settings: {
+      emailNotifications: { type: Boolean, default: true },
+      publicProfile: { type: Boolean, default: true },
+      defaultView: { type: String, enum: ["grid", "list"], default: "grid" },
+      defaultLanguage: { type: String, default: "en" },
+      theme: { type: String, enum: ["light", "dark"], default: "light" }
     }
   },
   { timestamps: true }
 );
+
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 export default User;

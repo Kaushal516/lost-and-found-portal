@@ -3,11 +3,13 @@ import { formatLostStatus } from "../../utils/statusMapper";
 import ImageCarousel from "../ImageCarousel/ImageCarousel";
 import ContactModal from "../ContactModal/ContactModal";
 import ItemDetailsModal from "../ItemDetailsModal/ItemDetailsModal";
+import { useLanguage } from "../../context/LanguageContext";
 import styles from "./ItemCard.module.css";
 
 const LostItemCard = ({ item, currentUserId }) => {
   const [showContact, setShowContact] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const { t } = useLanguage();
 
   if (!item) return null;
 
@@ -29,22 +31,22 @@ const LostItemCard = ({ item, currentUserId }) => {
             ? styles.statusProcess
             : styles.statusResolved
           }`}>
-          {formatLostStatus(status)}
+          {formatLostStatus(status, t)}
         </span>
       </div>
 
       <div className={styles.body}>
-        <p><strong>Category:</strong> {item.category}</p>
-        <p><strong>Location:</strong> {item.location || "Not specified"}</p>
+        <p><strong>{t('item.category')}:</strong> {t(`categories.${item.category}`)}</p>
+        <p><strong>{t('item.location')}:</strong> {item.location || t('common.noItems')}</p>
         <p>
-          <strong>Lost on:</strong>{" "}
+          <strong>{t('item.lostOn')}:</strong>{" "}
           {item.dateLost
             ? new Date(item.dateLost).toLocaleDateString()
-            : "Unknown"}
+            : t('common.noItems')}
         </p>
         {status === "resolved" && (
           <p>
-            <strong>Returned on:</strong>{" "}
+            <strong>{t('item.returnedOn')}:</strong>{" "}
             {new Date(item.updatedAt).toLocaleDateString()}
           </p>
         )}
@@ -55,9 +57,9 @@ const LostItemCard = ({ item, currentUserId }) => {
           className={styles.contactBtn}
           onClick={(e) => { e.stopPropagation(); setShowContact(true); }}
           disabled={isOwner}
-          title={isOwner ? "You posted this item" : "Contact the person who lost this item"}
+          title={isOwner ? t('item.yourReport') : t('item.contactPoster')}
         >
-          {isOwner ? "Your Report" : "Contact Poster"}
+          {isOwner ? t('item.yourReport') : t('item.contactPoster')}
         </button>
       </div>
 

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
 import api from "../../utils/api";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -32,12 +34,17 @@ const Register = () => {
     setError("");
     setSuccess("");
 
+    if (formData.password !== formData.confirmPassword) {
+      setError(t('auth.matchError'));
+      return;
+    }
+
     setLoading(true);
 
     try {
       await api.post("/users/register", formData);
 
-      setSuccess("Registration successful! Redirecting to login...");
+      setSuccess(t('auth.successReg'));
 
       setTimeout(() => {
         navigate("/login");
@@ -45,7 +52,7 @@ const Register = () => {
     } catch (err) {
       console.error("Registration Error:", err);
       setError(
-        err.response?.data?.message || err.message || "Registration failed (Unknown Error)"
+        err.response?.data?.message || err.message || t('common.error')
       );
     } finally {
       setLoading(false);
@@ -55,11 +62,11 @@ const Register = () => {
   return (
     <div className={styles.authPage}>
       <div className={styles.container}>
-        <h2>Create Account</h2>
+        <h2>{t('auth.registerTitle')}</h2>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <label>First Name</label>
+            <label>{t('auth.firstName')}</label>
             <input
               name="firstName"
               placeholder="e.g. John"
@@ -70,7 +77,7 @@ const Register = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Last Name</label>
+            <label>{t('auth.lastName')}</label>
             <input
               name="lastName"
               placeholder="e.g. Doe"
@@ -81,7 +88,7 @@ const Register = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Username</label>
+            <label>{t('profile.username')}</label>
             <input
               name="username"
               placeholder="letters, numbers, _ (no spaces)"
@@ -91,11 +98,10 @@ const Register = () => {
               minLength={4}
               maxLength={20}
             />
-            <small className={styles.hint}>Must be 4-20 characters, no special symbols like @</small>
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Email Address</label>
+            <label>{t('auth.emailLabel')}</label>
             <input
               type="email"
               name="email"
@@ -107,7 +113,7 @@ const Register = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Phone Number</label>
+            <label>{t('auth.phone')}</label>
             <input
               name="phoneNumber"
               placeholder="10-digit mobile number"
@@ -119,7 +125,7 @@ const Register = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Password</label>
+            <label>{t('auth.passwordLabel')}</label>
             <input
               type="password"
               name="password"
@@ -132,7 +138,7 @@ const Register = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Confirm Password</label>
+            <label>{t('auth.confirmPassword')}</label>
             <input
               type="password"
               name="confirmPassword"
@@ -147,8 +153,12 @@ const Register = () => {
           {success && <div className={styles.success}>{success}</div>}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Creating account..." : "Register"}
+            {loading ? t('auth.loggingUp') : t('auth.registerBtn')}
           </button>
+
+          <p className={styles.haveAccount}>
+            {t('auth.haveAccount')} <span onClick={() => navigate("/login")}>{t('auth.loginTitle')}</span>
+          </p>
         </form>
       </div>
     </div>

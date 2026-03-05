@@ -20,6 +20,40 @@
   border-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.3);
 }
 
+.listCard {
+  flex-direction: row !important;
+  align-items: center;
+  padding: 1rem !important;
+  gap: 2rem !important;
+}
+
+.listCard>div:first-child {
+  width: 150px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.listCard .header {
+  margin-bottom: 0.5rem;
+}
+
+.listCard .body {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.listCard .footer {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.listCard .contactBtn {
+  width: auto;
+  padding: 0.6rem 1.2rem;
+}
+
 .header {
   display: flex;
   align-items: flex-start;

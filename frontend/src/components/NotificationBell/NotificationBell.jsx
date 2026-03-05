@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import socket from "../../socket";
+import { useLanguage } from "../../context/LanguageContext";
 
 const NotificationBell = () => {
     const [notifications, setNotifications] = useState([]);
@@ -14,6 +15,7 @@ const NotificationBell = () => {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const { user, token } = useAuth();
+    const { t } = useLanguage();
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -105,7 +107,7 @@ const NotificationBell = () => {
 
     return (
         <div className={styles.bellContainer} ref={dropdownRef}>
-            <button className={styles.bellButton} onClick={toggleDropdown} aria-label="Notifications">
+            <button className={styles.bellButton} onClick={toggleDropdown} aria-label={t('notifications.title')}>
                 <Bell size={20} />
                 {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
             </button>
@@ -113,10 +115,10 @@ const NotificationBell = () => {
             {isOpen && (
                 <div className={styles.dropdown}>
                     <div className={styles.header}>
-                        <h3>Notifications</h3>
+                        <h3>{t('notifications.title')}</h3>
                         {unreadCount > 0 && (
                             <button className={styles.markAllBtn} onClick={markAllAsRead}>
-                                Mark all read
+                                {t('notifications.markAllRead')}
                             </button>
                         )}
                     </div>
@@ -125,7 +127,7 @@ const NotificationBell = () => {
                         {notifications.length === 0 ? (
                             <div className={styles.empty}>
                                 <Info size={24} />
-                                <p>No notifications yet</p>
+                                <p>{t('notifications.noNotifications')}</p>
                             </div>
                         ) : (
                             notifications.map(notif => (
@@ -144,7 +146,7 @@ const NotificationBell = () => {
                                         <button
                                             className={styles.checkBtn}
                                             onClick={(e) => markAsRead(notif._id, e)}
-                                            title="Mark as read"
+                                            title={t('notifications.markAsRead')}
                                         >
                                             <Check size={16} />
                                         </button>
@@ -160,7 +162,7 @@ const NotificationBell = () => {
             {toast && (
                 <div className={styles.toast} onClick={() => handleNotificationClick(toast)}>
                     <div className={styles.toastContent}>
-                        <strong>New Notification</strong>
+                        <strong>{t('notifications.newNotification')}</strong>
                         <p>{toast.message}</p>
                     </div>
                     <button className={styles.toastClose} onClick={(e) => { e.stopPropagation(); setToast(null); }}>×</button>

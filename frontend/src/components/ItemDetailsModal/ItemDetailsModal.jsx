@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import styles from "./ItemDetailsModal.module.css";
 import ImageCarousel from "../ImageCarousel/ImageCarousel";
-import SimilarItemsCarousel from "../SimilarItemsCarousel/SimilarItemsCarousel";
-import { X, MapPin, Calendar, Tag, Info, User, Clock } from "lucide-react";
+const SimilarItemsCarousel = lazy(() => import("../SimilarItemsCarousel/SimilarItemsCarousel"));
+import { X, MapPin, Calendar, Tag, Info, User, Clock, Share2 } from "lucide-react";
 import ContactModal from "../ContactModal/ContactModal";
 import useAuth from "../../hooks/useAuth";
 import api from "../../utils/api";
 import { formatFoundStatus, formatLostStatus } from "../../utils/statusMapper";
+import { useLanguage } from "../../context/LanguageContext";
 
 const ItemDetailsModal = ({ item, type, onClose }) => {
     const { user, isAdmin } = useAuth();
+    const { t } = useLanguage();
     const [showContact, setShowContact] = useState(false);
     const [itemStatus, setItemStatus] = useState(item.status || "active");
     const currentUserId = user?.id;
-
     const posterId = item.postedBy?._id ?? item.postedBy;
     const isOwner = currentUserId && String(posterId) === String(currentUserId);
 
@@ -42,24 +43,36 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
         if (type !== "found") return;
         try {
             if (!currentUserId) {
-                alert("Please login to claim this item");
+                alert(t('item.loginToClaim'));
                 return;
             }
             const res = await api.put(`/found/${item._id}/claim`);
             setItemStatus(res.data.status);
         } catch (err) {
             console.error("Failed to claim item", err);
-            alert(err.response?.data?.message || "Failed to claim item");
+            alert(err.response?.data?.message || t('common.error'));
         }
     };
 
+    const handleShare = () => {
+        const url = window.location.href;
+        const text = `Check out this ${type} item: ${item.title}`;
+        if (navigator.share) {
+            navigator.share({ title: item.title, text, url });
+        } else {
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            window.open(twitterUrl, '_blank');
+        }
+    };
+
+
     const isClaimable = type === "found" && itemStatus === "active";
-    const btnText = itemStatus === "active" ? "Claim Item" : (itemStatus === "resolved" ? "Resolved" : "Claimed");
+    const btnText = itemStatus === "active" ? t('item.claimItem') : (itemStatus === "resolved" ? t('item.resolved') : t('item.claimed'));
 
     return createPortal(
         <div className={styles.backdrop} onClick={handleBackdropClick}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.closeBtn} onClick={handleClose} aria-label="Close">
+                <button className={styles.closeBtn} onClick={handleClose} aria-label={t('common.cancel')}>
                     <X size={24} />
                 </button>
 
@@ -70,7 +83,7 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
                         ) : (
                             <div className={styles.noImage}>
                                 <Info size={48} color="var(--gray-400)" />
-                                <p>No Photos Available</p>
+                                <p>{t('item.noPhotos')}</p>
                             </div>
                         )}
                     </div>
@@ -78,35 +91,42 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
                     <div className={styles.infoSection}>
                         <div className={styles.header}>
                             <h2 className={styles.title}>{item.title}</h2>
-                            <span className={`${styles.statusBadge} ${itemStatus === "active" ? styles.active : itemStatus === "resolved" ? styles.resolved : styles.process}`}>
-                                {type === "lost" ? formatLostStatus(itemStatus) : formatFoundStatus(itemStatus)}
-                            </span>
+                            <div className={styles.headerRight}>
+                                <div className={styles.utilityBar}>
+                                    <button onClick={handleShare} className={styles.utilityBtn} title={t('item.shareItem')}>
+                                        <Share2 size={18} />
+                                    </button>
+                                </div>
+                                <span className={`${styles.statusBadge} ${itemStatus === "active" ? styles.active : itemStatus === "resolved" ? styles.resolved : styles.process}`}>
+                                    {type === "lost" ? formatLostStatus(itemStatus, t) : formatFoundStatus(itemStatus, t)}
+                                </span>
+                            </div>
                         </div>
 
-                        <p className={styles.category}>{item.category}</p>
+                        <p className={styles.category}>{t(`categories.${item.category}`)}</p>
 
                         <div className={styles.detailsList}>
                             <div className={styles.detailItem}>
                                 <MapPin size={18} className={styles.icon} />
-                                <span><strong>Location:</strong> {item.location}</span>
+                                <span><strong>{t('item.location')}:</strong> {item.location}</span>
                             </div>
                             <div className={styles.detailItem}>
                                 <Calendar size={18} className={styles.icon} />
-                                <span><strong>Date:</strong> {new Date(type === "lost" ? item.dateLost : item.dateFound).toLocaleDateString()}</span>
+                                <span><strong>{t('item.date')}:</strong> {new Date(type === "lost" ? item.dateLost : item.dateFound).toLocaleDateString()}</span>
                             </div>
                             <div className={styles.detailItem}>
                                 <User size={18} className={styles.icon} />
-                                <span><strong>Posted By:</strong> {item.postedBy?.firstName ? `${item.postedBy.firstName} ${item.postedBy.lastName}` : "Unknown User"}</span>
+                                <span><strong>{t('item.postedBy')}:</strong> {item.postedBy?.firstName ? `${item.postedBy.firstName} ${item.postedBy.lastName}` : t('item.unknownUser')}</span>
                             </div>
                             <div className={styles.detailItem}>
                                 <Clock size={18} className={styles.icon} />
-                                <span><strong>Posted On:</strong> {new Date(item.createdAt).toLocaleDateString()}</span>
+                                <span><strong>{t('item.postedOn')}:</strong> {new Date(item.createdAt).toLocaleDateString()}</span>
                             </div>
                         </div>
 
                         <div className={styles.description}>
-                            <h4>Description</h4>
-                            <p>{item.description || "No description provided."}</p>
+                            <h4>{t('item.descriptionHeading')}</h4>
+                            <p>{item.description || t('item.noDescription')}</p>
                         </div>
 
                         {item.tags && item.tags.length > 0 && (
@@ -125,7 +145,7 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
                                     onClick={handleClaim}
                                     disabled={!isClaimable || isOwner}
                                 >
-                                    {isOwner ? "Your Post" : btnText}
+                                    {isOwner ? t('item.yourPost') : btnText}
                                 </button>
                             )}
 
@@ -134,7 +154,7 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
                                     className={`${styles.actionBtn} ${styles.secondaryBtn}`}
                                     onClick={() => setShowContact(true)}
                                 >
-                                    Contact Poster
+                                    {t('item.contactPoster')}
                                 </button>
                             )}
                         </div>
@@ -143,7 +163,9 @@ const ItemDetailsModal = ({ item, type, onClose }) => {
 
                 {/* SIMILAR ITEMS CAROUSEL */}
                 <div className={styles.bottomSection}>
-                    <SimilarItemsCarousel currentItem={item} type={type} />
+                    <Suspense fallback={<div className={styles.loadingPlaceholder}>Loading similar items...</div>}>
+                        <SimilarItemsCarousel currentItem={item} type={type} />
+                    </Suspense>
                 </div>
             </div>
 

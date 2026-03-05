@@ -13,8 +13,9 @@ export const getOnlineUsersCount = () => {
 const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "*", // replace with frontend URL later
-      methods: ["GET", "POST"]
+      origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+      methods: ["GET", "POST"],
+      credentials: true
     }
   });
 

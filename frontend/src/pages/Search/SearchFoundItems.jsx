@@ -3,10 +3,12 @@ import { useSearchParams } from "react-router-dom";
 import api from "../../utils/api";
 import useAuth from "../../hooks/useAuth";
 import FoundItemCard from "../../components/ItemCard/FoundItemCard";
+import { useLanguage } from "../../context/LanguageContext";
 import styles from "./SearchFoundItems.module.css";
 import { Search, Filter, Calendar } from "lucide-react";
 
 const SearchFoundItems = () => {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState([]);
@@ -18,6 +20,7 @@ const SearchFoundItems = () => {
   const [dateTo, setDateTo] = useState("");
   const [statusFilter, setStatusFilter] = useState(searchParams.get("status") === "returned" ? "resolved" : "");
   const [sortBy, setSortBy] = useState("newest"); // Newest, Oldest, Title A-Z
+  const [viewMode, setViewMode] = useState("grid"); // grid or list
 
   const availableCategories = ["Electronics", "Documents", "Clothing", "Accessories", "Other"];
 
@@ -94,9 +97,27 @@ const SearchFoundItems = () => {
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
-        <h2 className={styles.heading}>Search Found Items</h2>
-        <div className={styles.resultCount}>
-          {sortedItems.length} {sortedItems.length === 1 ? 'result' : 'results'} found
+        <div>
+          <h2 className={styles.heading}>{t('search.foundItemsTitle')}</h2>
+          <div className={styles.resultCount}>
+            {sortedItems.length} {t('search.results')}
+          </div>
+        </div>
+        <div className={styles.viewToggle}>
+          <button
+            className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.toggleActive : ''}`}
+            onClick={() => setViewMode('grid')}
+            title={t('search.grid')}
+          >
+            <div className={styles.gridIcon} />
+          </button>
+          <button
+            className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.toggleActive : ''}`}
+            onClick={() => setViewMode('list')}
+            title={t('search.list')}
+          >
+            <div className={styles.listIcon} />
+          </button>
         </div>
       </div>
 
@@ -104,17 +125,17 @@ const SearchFoundItems = () => {
         {/* ADVANCED FILTER SIDEBAR */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
-            <h3><Filter size={18} /> Filters</h3>
-            <button className={styles.resetBtn} onClick={resetFilters}>Reset All</button>
+            <h3><Filter size={18} /> {t('search.filters')}</h3>
+            <button className={styles.resetBtn} onClick={resetFilters}>{t('search.reset')}</button>
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Search Term</label>
+            <label className={styles.filterLabel}>{t('search.searchTerm')}</label>
             <div className={styles.searchInputWrapper}>
               <Search size={16} className={styles.searchIcon} />
               <input
                 type="text"
-                placeholder="Keywords..."
+                placeholder={t('search.keywords')}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className={styles.sidebarInput}
@@ -123,63 +144,63 @@ const SearchFoundItems = () => {
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Sort By</label>
+            <label className={styles.filterLabel}>{t('search.sortBy')}</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className={styles.sidebarSelect}
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="title-asc">Title (A-Z)</option>
-              <option value="title-desc">Title (Z-A)</option>
+              <option value="newest">{t('search.newest')}</option>
+              <option value="oldest">{t('search.oldest')}</option>
+              <option value="title-asc">{t('search.titleAsc')}</option>
+              <option value="title-desc">{t('search.titleDesc')}</option>
             </select>
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Status</label>
+            <label className={styles.filterLabel}>{t('search.status')}</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.sidebarSelect}
             >
-              <option value="">All Statuses</option>
-              <option value="active">Available</option>
-              <option value="resolved">Returned</option>
+              <option value="">{t('search.anyStatus')}</option>
+              <option value="active">{t('search.active')}</option>
+              <option value="resolved">{t('search.resolved')}</option>
             </select>
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Categories</label>
+            <label className={styles.filterLabel}>{t('search.categories')}</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className={styles.sidebarSelect}
             >
-              <option value="">All Categories</option>
+              <option value="">{t('search.allCategories')}</option>
               {availableCategories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
               ))}
             </select>
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}><Calendar size={14} /> Date Found Range</label>
+            <label className={styles.filterLabel}><Calendar size={14} /> {t('search.dateRange')}</label>
             <div className={styles.dateRange}>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
                 className={styles.sidebarDate}
-                title="From Date"
+                title={t('search.from')}
               />
-              <span className={styles.dateSeparator}>to</span>
+              <span className={styles.dateSeparator}>{t('search.to')}</span>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
                 className={styles.sidebarDate}
-                title="To Date"
+                title={t('search.to')}
               />
             </div>
           </div>
@@ -202,14 +223,14 @@ const SearchFoundItems = () => {
             </div>
           ) : sortedItems.length === 0 ? (
             <div className={styles.emptyState}>
-              <h3>No items found</h3>
-              <p>Try adjusting your filters or search terms.</p>
-              <button className={styles.resetBtnLg} onClick={resetFilters}>Clear Filters</button>
+              <h3>{t('search.noResults')}</h3>
+              <p>{t('search.placeholder')}</p>
+              <button className={styles.resetBtnLg} onClick={resetFilters}>{t('search.reset')}</button>
             </div>
           ) : (
-            <div className={styles.grid}>
+            <div className={`${styles.grid} ${viewMode === 'list' ? styles.listView : ''}`}>
               {sortedItems.map((item) => (
-                <FoundItemCard key={item._id} item={item} currentUserId={user?.id} />
+                <FoundItemCard key={item._id} item={item} currentUserId={user?.id} viewMode={viewMode} />
               ))}
             </div>
           )}

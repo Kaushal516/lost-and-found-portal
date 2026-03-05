@@ -1,6 +1,9 @@
 import LostItem from "../models/LostItem.js";
+import Notification from "../models/Notification.js";
 import { uploadImagesToCloudinary } from "../utils/uploadToCloudinary.js";
 import { extractTags } from "../utils/extractTags.js";
+import { sendNotificationToUser } from "../socket/socket.js";
+import { getIO } from "../socket/ioInstance.js";
 
 // CREATE LOST ITEM (AUTH REQUIRED)
 export const createLostItem = async (req, res) => {
@@ -42,6 +45,21 @@ export const createLostItem = async (req, res) => {
       images: imageUrls,
       postedBy: req.user.id
     });
+
+    // Broadcast global event
+    try {
+      const io = getIO();
+      io.emit("globalActivity", {
+        type: "newItem",
+        item: {
+          title: lostItem.title,
+          type: "lost",
+          location: lostItem.location
+        }
+      });
+    } catch (err) {
+      console.error("Socket emit failed:", err.message);
+    }
 
     res.status(201).json(lostItem);
   } catch (error) {
@@ -107,6 +125,35 @@ export const resolveLostItem = async (req, res) => {
     item.resolvedAt = new Date();
 
     await item.save();
+
+    // Notify the Reporter (Owner)
+    if (item.postedBy) {
+      const reporterNotif = await Notification.create({
+        recipient: item.postedBy,
+        type: "ITEM_RESOLVED",
+        message: `Good news! Your lost item "${item.title}" has been resolved and found.`,
+        link: `/dashboard`,
+        relatedItem: item._id,
+        itemModel: "LostItem"
+      });
+      sendNotificationToUser(item.postedBy.toString(), reporterNotif);
+    }
+
+    // Broadcast global event
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit("globalActivity", {
+          type: "itemResolved",
+          item: {
+            title: item.title,
+            type: "lost"
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Socket emit failed:", err.message);
+    }
 
     res.json({ message: "Item resolved", item });
   } catch (error) {

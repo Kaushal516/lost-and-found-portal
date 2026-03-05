@@ -4,6 +4,7 @@ import Admin from "../models/Admin.js";
 import { uploadImagesToCloudinary } from "../utils/uploadToCloudinary.js";
 import { extractTags } from "../utils/extractTags.js";
 import { sendNotificationToUser } from "../socket/socket.js";
+import { getIO } from "../socket/ioInstance.js";
 
 // CREATE FOUND ITEM (AUTH REQUIRED)
 export const createFoundItem = async (req, res) => {
@@ -48,6 +49,21 @@ export const createFoundItem = async (req, res) => {
       images: imageUrls,
       postedBy: req.user.id
     });
+
+    // Broadcast global event
+    try {
+      const io = getIO();
+      io.emit("globalActivity", {
+        type: "newItem",
+        item: {
+          title: foundItem.title,
+          type: "found",
+          location: foundItem.location
+        }
+      });
+    } catch (err) {
+      console.error("Socket emit failed:", err.message);
+    }
 
     res.status(201).json(foundItem);
   } catch (error) {
@@ -170,9 +186,23 @@ export const rejectClaim = async (req, res) => {
     }
 
     item.status = "active";
+    const claimantId = item.claimedBy;
     item.claimedBy = null;
 
     await item.save();
+
+    // Notify the claimant that their claim was rejected
+    if (claimantId) {
+      const rejectNotif = await Notification.create({
+        recipient: claimantId,
+        type: "CLAIM_REJECTED",
+        message: `Your claim for "${item.title}" was not approved. The item is available again.`,
+        link: `/search`,
+        relatedItem: item._id,
+        itemModel: "FoundItem"
+      });
+      sendNotificationToUser(claimantId.toString(), rejectNotif);
+    }
 
     res.json({ message: "Claim rejected", item });
   } catch (error) {
@@ -193,6 +223,50 @@ export const resolveFoundItem = async (req, res) => {
     item.resolvedAt = new Date();
 
     await item.save();
+
+    // Populate helpful fields for notifications
+    await item.populate("postedBy", "firstName lastName");
+    await item.populate("claimedBy", "firstName lastName");
+
+    // 1. Notify the Poster (Finder)
+    if (item.postedBy) {
+      const finderNotif = await Notification.create({
+        recipient: item.postedBy._id,
+        type: "ITEM_RESOLVED",
+        message: `Your found item "${item.title}" has been resolved.`,
+        link: `/dashboard`,
+        relatedItem: item._id,
+        itemModel: "FoundItem"
+      });
+      sendNotificationToUser(item.postedBy._id.toString(), finderNotif);
+    }
+
+    // 2. Notify the Claimant (Owner)
+    if (item.claimedBy) {
+      const claimantNotif = await Notification.create({
+        recipient: item.claimedBy._id,
+        type: "CLAIM_APPROVED",
+        message: `Your claim for "${item.title}" has been approved and resolved!`,
+        link: `/profile`,
+        relatedItem: item._id,
+        itemModel: "FoundItem"
+      });
+      sendNotificationToUser(item.claimedBy._id.toString(), claimantNotif);
+    }
+
+    // Broadcast global event
+    try {
+      const io = getIO();
+      io.emit("globalActivity", {
+        type: "itemResolved",
+        item: {
+          title: item.title,
+          type: "found"
+        }
+      });
+    } catch (err) {
+      console.error("Socket emit failed:", err.message);
+    }
 
     res.json({ message: "Item resolved", item });
   } catch (error) {

@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 import styles from "./PostFoundItem.module.css";
+import { useLanguage } from "../../context/LanguageContext";
 
 const PostFoundItem = () => {
+  const { t } = useLanguage();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -26,7 +28,7 @@ const PostFoundItem = () => {
     setImages((prev) => {
       const combined = [...prev, ...selectedFiles];
       if (combined.length > 5) {
-        showPopup("Maximum 5 images allowed", "error");
+        showPopup(t('common.maxImgError'), "error");
         return prev;
       }
       return combined;
@@ -43,13 +45,13 @@ const PostFoundItem = () => {
     e.preventDefault();
 
     if (!title || !description || !category || !location || !dateFound) {
-      showPopup("Please fill all required fields", "error");
+      showPopup(t('common.required'), "error");
       return;
     }
 
     // 🚨 Mandatory image check
     if (images.length < 1) {
-      showPopup("At least one image is required", "error");
+      showPopup(t('common.minImgError'), "error");
       return;
     }
 
@@ -72,7 +74,7 @@ const PostFoundItem = () => {
         },
       });
 
-      showPopup("Found item posted successfully");
+      showPopup(t('common.success'));
 
       setTitle("");
       setDescription("");
@@ -82,7 +84,7 @@ const PostFoundItem = () => {
       setImages([]);
     } catch (error) {
       showPopup(
-        error.response?.data?.message || "Failed to post found item",
+        error.response?.data?.message || t('post.failedToPostFound') || "Failed to post found item",
         "error"
       );
     } finally {
@@ -99,58 +101,56 @@ const PostFoundItem = () => {
       )}
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <h2>Post Found Item</h2>
+        <h2>{t('post.foundTitle')}</h2>
 
         <label htmlFor="title">
-          Item Title <span style={{ color: "red" }}>*</span>
+          {t('post.itemTitle')} <span style={{ color: "red" }}>*</span>
         </label>
         <input
           id="title"
           type="text"
-          placeholder="e.g. Black Wallet"
+          placeholder={t('post.itemTitlePlaceholder')}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <label htmlFor="category">
-          Category <span style={{ color: "red" }}>*</span>
+          {t('post.category')} <span style={{ color: "red" }}>*</span>
         </label>
         <select
           id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="">Select category</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Documents">Documents</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Accessories">Accessories</option>
-          <option value="Other">Other</option>
+          <option value="">{t('post.selectCategory')}</option>
+          {["Electronics", "Documents", "Clothing", "Accessories", "Other"].map(cat => (
+            <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
+          ))}
         </select>
 
         <label htmlFor="description">
-          Description <span style={{ color: "red" }}>*</span>
+          {t('post.description')} <span style={{ color: "red" }}>*</span>
         </label>
         <textarea
           id="description"
-          placeholder="Provide detailed description"
+          placeholder={t('post.descPlaceholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <label htmlFor="location">
-          Found Location <span style={{ color: "red" }}>*</span>
+          {t('post.location')} <span style={{ color: "red" }}>*</span>
         </label>
         <input
           id="location"
           type="text"
-          placeholder="Where was it found?"
+          placeholder={t('post.foundLocPlaceholder')}
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
 
         <label htmlFor="dateFound">
-          Date Found <span style={{ color: "red" }}>*</span>
+          {t('post.dateFound')} <span style={{ color: "red" }}>*</span>
         </label>
         <input
           id="dateFound"
@@ -161,7 +161,7 @@ const PostFoundItem = () => {
 
         {/* IMAGE UPLOAD */}
         <label className={styles.uploadLabel}>
-          Add Photos <strong>(At least 1 required)</strong>
+          {t('post.addPhotos')} <strong>{t('post.minPhotos')}</strong>
         </label>
 
         {images.length > 0 && (
@@ -179,17 +179,17 @@ const PostFoundItem = () => {
 
         <div className={styles.uploadBox}>
           <div className={styles.cameraIcon}></div>
-          <p>Upload photos to verify the found item</p>
+          <p>{t('post.uploadPhotos')}</p>
 
           <button
             type="button"
             className={styles.chooseBtn}
             onClick={() => fileInputRef.current.click()}
           >
-            Choose Photos
+            {t('post.choosePhotos')}
           </button>
 
-          <small>Supports JPG, PNG, WEBP (Max 5 images)</small>
+          <small>{t('post.supportText')}</small>
 
           <input
             type="file"
@@ -202,7 +202,7 @@ const PostFoundItem = () => {
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Submit Found Item"}
+          {loading ? t('post.posting') : t('post.submitFound')}
         </button>
       </form>
     </div>

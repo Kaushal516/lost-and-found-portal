@@ -6,13 +6,15 @@ import ImageCarousel from "../ImageCarousel/ImageCarousel";
 import ContactModal from "../ContactModal/ContactModal";
 import ItemDetailsModal from "../ItemDetailsModal/ItemDetailsModal";
 import { formatFoundStatus } from "../../utils/statusMapper";
+import { useLanguage } from "../../context/LanguageContext";
 import styles from "./ItemCard.module.css";
 
-const FoundItemCard = ({ item, currentUserId }) => {
+const FoundItemCard = ({ item, currentUserId, viewMode = "grid" }) => {
   const [showContact, setShowContact] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
+  const { t } = useLanguage();
 
   if (!item) return null;
 
@@ -24,22 +26,22 @@ const FoundItemCard = ({ item, currentUserId }) => {
     e.stopPropagation();
     try {
       if (!currentUserId) {
-        alert("Please login to claim this item");
+        alert(t('item.loginToClaim'));
         return;
       }
       const res = await api.put(`/found/${item._id}/claim`);
       setItemStatus(res.data.status); // Should be "In Process"
     } catch (err) {
       console.error("Failed to claim item", err);
-      alert(err.response?.data?.message || "Failed to claim item");
+      alert(err.response?.data?.message || t('common.error'));
     }
   };
 
   const isClaimable = itemStatus === "active";
-  const btnText = itemStatus === "active" ? "Claim" : (itemStatus === "resolved" ? "Resolved" : "Claimed");
+  const btnText = itemStatus === "active" ? t('item.claim') : (itemStatus === "resolved" ? t('item.resolved') : t('item.claimed'));
 
   return (
-    <div className={styles.card} onClick={() => setShowDetails(true)} style={{ cursor: 'pointer' }}>
+    <div className={`${styles.card} ${viewMode === 'list' ? styles.listCard : ''}`} onClick={() => setShowDetails(true)} style={{ cursor: 'pointer' }}>
       <div>
         {item.images?.length > 0 && (
           <ImageCarousel images={item.images} />
@@ -54,15 +56,15 @@ const FoundItemCard = ({ item, currentUserId }) => {
             ? styles.statusProcess
             : styles.statusResolved
           }`}>
-          {formatFoundStatus(itemStatus)}
+          {formatFoundStatus(itemStatus, t)}
         </span>
       </div>
 
       <div className={styles.body}>
-        <p><strong>Category:</strong> {item.category}</p>
-        <p><strong>Location:</strong> {item.location}</p>
+        <p><strong>{t('item.category')}:</strong> {t(`categories.${item.category}`)}</p>
+        <p><strong>{t('item.location')}:</strong> {item.location}</p>
         <p>
-          <strong>Found on:</strong>{" "}
+          <strong>{t('item.foundOn')}:</strong>{" "}
           {new Date(item.dateFound).toLocaleDateString()}
         </p>
       </div>
@@ -75,13 +77,13 @@ const FoundItemCard = ({ item, currentUserId }) => {
             disabled={!isClaimable || isOwner}
             title={
               isOwner
-                ? "You cannot claim your own item"
+                ? t('item.ownerTooltip')
                 : isClaimable
-                  ? "Click to claim this item"
-                  : "This item is already claimed or resolved"
+                  ? t('item.claimTooltip')
+                  : t('item.alreadyClaimedTooltip')
             }
           >
-            {isOwner ? "Your Post" : btnText}
+            {isOwner ? t('item.yourPost') : btnText}
           </button>
         )}
       </div>

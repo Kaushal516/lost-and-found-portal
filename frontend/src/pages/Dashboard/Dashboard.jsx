@@ -2,7 +2,7 @@ import useDashboardStats from "../../hooks/useDashboardStats";
 import styles from "./Dashboard.module.css";
 import DashboardCharts from "./DashboardCharts";
 import { useNavigate } from "react-router-dom";
-import { Users, Search, Package, CheckCircle, Activity, LayoutDashboard, RotateCcw } from "lucide-react";
+import { Users, Search, Package, CheckCircle, Activity, LayoutDashboard, RotateCcw, Trash2 } from "lucide-react";
 
 const Dashboard = () => {
   const { stats, loading } = useDashboardStats();
@@ -41,21 +41,22 @@ const Dashboard = () => {
           <DashboardCharts type="bar" stats={stats} />
         </div>
         <div className={styles.miniCard}>
-          <h4>Category Share</h4>
-          {/* Placeholder for now, could be a simple list or progress bars */}
-          <div className={styles.progressContainer}>
-            <div className={styles.progressItem}>
-              <div className={styles.progressLabel}><span>Lost Reports</span><span>{Math.round((stats.totalLost / (stats.totalLost + stats.totalFound)) * 100)}%</span></div>
-              <div className={styles.progressBar}><div className={styles.progressFill} style={{ width: `${(stats.totalLost / (stats.totalLost + stats.totalFound)) * 100}%` }}></div></div>
-            </div>
-            <div style={{ marginTop: "1.5rem" }} className={styles.progressItem}>
-              <div className={styles.progressLabel}><span>Found Postings</span><span>{Math.round((stats.totalFound / (stats.totalLost + stats.totalFound)) * 100)}%</span></div>
-              <div className={styles.progressBar}><div className={styles.progressFill} style={{ width: `${(stats.totalFound / (stats.totalLost + stats.totalFound)) * 100}%`, background: "var(--secondary)" }}></div></div>
-            </div>
-            <div style={{ marginTop: "1.5rem" }} className={styles.progressItem}>
-              <div className={styles.progressLabel}><span>Resolution Rate</span><span>{Math.round(((stats.lostResolved + stats.foundResolved) / (stats.totalLost + stats.totalFound)) * 100)}%</span></div>
-              <div className={styles.progressBar}><div className={styles.progressFill} style={{ width: `${((stats.lostResolved + stats.foundResolved) / (stats.totalLost + stats.totalFound)) * 100}%`, background: "var(--warning)" }}></div></div>
-            </div>
+          <h4>Community Heroes</h4>
+          <div className={styles.heroesList}>
+            {stats.topContributors?.map((hero, index) => (
+              <div key={hero._id} className={styles.heroItem}>
+                <div className={styles.heroRank}>{index + 1}</div>
+                <div className={styles.heroInfo}>
+                  <div className={styles.heroName}>{hero.name}</div>
+                  <div className={styles.heroEmail}>{hero.email}</div>
+                </div>
+                <div className={styles.heroCount}>
+                  <span>{hero.count}</span>
+                  <small>items returned</small>
+                </div>
+              </div>
+            ))}
+            {!stats.topContributors?.length && <p className={styles.emptyHeroes}>No heroes yet. Start returning items!</p>}
           </div>
         </div>
       </div>
@@ -106,6 +107,14 @@ const Dashboard = () => {
               >
                 <Search size={18} />
                 <span>Manage Claims</span>
+              </button>
+              <button
+                onClick={() => navigate("/admin/deletion-requests")}
+                className={styles.navBtn}
+                style={{ backgroundColor: "hsla(0, 84%, 60%, 0.1)", color: "var(--danger)" }}
+              >
+                <Trash2 size={18} />
+                <span>Manage Deletions</span>
               </button>
             </div>
           </div>

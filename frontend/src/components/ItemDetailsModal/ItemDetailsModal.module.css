@@ -143,6 +143,59 @@
     color: var(--gray-600);
 }
 
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.utilityBar {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.utilityBtn {
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-600);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.utilityBtn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05);
+}
+
+@media print {
+    .backdrop {
+        background: white;
+        position: static;
+        overflow: visible;
+        padding: 0;
+    }
+
+    .modalContent {
+        max-height: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .closeBtn,
+    .utilityBar,
+    .actions,
+    .bottomSection {
+        display: none !important;
+    }
+}
+
 .detailsList {
     display: flex;
     flex-direction: column;

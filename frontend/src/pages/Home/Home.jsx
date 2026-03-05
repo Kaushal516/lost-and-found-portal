@@ -3,9 +3,12 @@ import styles from "./Home.module.css";
 import megaphoneIcon from "../../assets/report_icon_new.png";
 import searchIcon from "../../assets/search_icon_new.png";
 import chatIcon from "../../assets/secure_icon_new.png";
+import LiveActivityFeed from "../../components/LiveActivityFeed/LiveActivityFeed";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Home = () => {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     return (
         <div className={styles.container}>
@@ -13,61 +16,49 @@ const Home = () => {
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
                     <h1 className={styles.title}>
-                        Recover What’s <span className={styles.highlight}>Lost</span>.<br />
-                        Return What’s <span className={styles.highlight}>Found</span>.
+                        {t('home.heroTitle')}
                     </h1>
                     <p className={styles.subtitle}>
-                        A secure community portal to reconnect owners with their lost belongings.
-                        Simple, fast, and trusted by thousands.
+                        {t('home.heroSubtitle')}
                     </p>
                     <div className={styles.ctaGroup}>
                         <button onClick={() => navigate("/login")} className={styles.primaryBtn}>
-                            Get Started
+                            {t('nav.login')}
                         </button>
                         <button onClick={() => navigate("/search")} className={styles.secondaryBtn}>
-                            Browse Found Items
+                            {t('home.viewFound')}
                         </button>
                     </div>
                 </div>
                 <div className={styles.heroVisual}>
-                    <div className={styles.circle}></div>
-                    <div className={styles.cardPreview}>
-                        <div className={styles.fakeCard}>
-                            <span>Lost Keys</span>
-                            <div className={styles.fakeTag}>🔑</div>
-                        </div>
-                        <div className={`${styles.fakeCard} ${styles.card2}`}>
-                            <span>Found Wallet</span>
-                            <div className={styles.fakeTag}>💼</div>
-                        </div>
-                    </div>
+                    <LiveActivityFeed />
                 </div>
             </section>
 
             {/* How it Works */}
             <section className={styles.features}>
-                <h2 className={styles.sectionTitle}>How It Works</h2>
+                <h2 className={styles.sectionTitle}>{t('home.howItWorks')}</h2>
                 <div className={styles.grid}>
                     <div className={styles.featureCard}>
                         <div className={styles.iconContainer}>
                             <img src={megaphoneIcon} alt="Report" className={styles.featureIcon} />
                         </div>
-                        <h3>Report Lost</h3>
-                        <p>Post details about your missing item so others can help you find it.</p>
+                        <h3>{t('home.reportTitle')}</h3>
+                        <p>{t('home.reportDesc')}</p>
                     </div>
                     <div className={styles.featureCard}>
                         <div className={styles.iconContainer}>
                             <img src={searchIcon} alt="Search" className={styles.featureIcon} />
                         </div>
-                        <h3>Search Found</h3>
-                        <p>Browse items found by the community to see if yours is waiting for you.</p>
+                        <h3>{t('home.searchTitle')}</h3>
+                        <p>{t('home.searchDesc')}</p>
                     </div>
                     <div className={styles.featureCard}>
                         <div className={styles.iconContainer}>
                             <img src={chatIcon} alt="Connect" className={styles.featureIcon} />
                         </div>
-                        <h3>Connect Securely</h3>
-                        <p>Chat with finders or owners directly through our secure platform.</p>
+                        <h3>{t('home.connectTitle')}</h3>
+                        <p>{t('home.connectDesc')}</p>
                     </div>
                 </div>
             </section>

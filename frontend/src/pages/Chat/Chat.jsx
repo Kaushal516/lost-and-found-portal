@@ -5,8 +5,10 @@ import useAuth from "../../hooks/useAuth";
 import ChatList from "./ChatList";
 import styles from "./Chat.module.css";
 import socket from "../../socket";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Chat = () => {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("item");
   const itemType = searchParams.get("type");
@@ -165,7 +167,7 @@ const Chat = () => {
   return (
     <div className={styles.container}>
       <aside className={styles.sidebar}>
-        <h3>Chat</h3>
+        <h3>{t('chat.title')}</h3>
         <ChatList
           onSelectChat={(chat) => {
             setSelectedChat(chat);
@@ -182,9 +184,7 @@ const Chat = () => {
 
       <main className={styles.chatArea}>
         {!selectedChat ? (
-          <p className={styles.placeholder}>
-            Open a chat from a Lost or Found item card to start messaging.
-          </p>
+          <div className={styles.emptyChatPlaceholder} />
         ) : (
           <>
             <div className={styles.chatLog}>
@@ -224,7 +224,7 @@ const Chat = () => {
               <div className={styles.inputWrap}>
                 <input
                   ref={inputRef}
-                  placeholder="Type a message..."
+                  placeholder={t('chat.typeMessage')}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -240,7 +240,7 @@ const Chat = () => {
               <button
                 className={styles.attachBtn}
                 onClick={() => fileInputRef.current.click()}
-                title="Attach Image"
+                title={t('chat.sendImg')}
               >
                 <svg
                   width="20"
@@ -261,7 +261,7 @@ const Chat = () => {
                 onClick={sendMessage}
                 disabled={!text.trim() && !file}
               >
-                {file ? "Send Img" : "Send"}
+                {file ? t('chat.sendImg') : t('chat.send')}
               </button>
             </div>
           </>
