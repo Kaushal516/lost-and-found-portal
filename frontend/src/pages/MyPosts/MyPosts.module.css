@@ -69,13 +69,14 @@
 }
 
 .section h3 {
-  font-size: 1.25rem;
+  font-size: 0.9rem;
   color: var(--gray-400);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   font-weight: 800;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   text-align: center;
+  opacity: 0.8;
 }
 
 /* ===== GRID & CARDS ===== */
@@ -195,17 +196,26 @@
 
 .empty {
   text-align: center;
-  padding: 4rem;
-  background: var(--glass-bg);
+  padding: 6rem 2rem;
+  background: hsla(0, 0%, 100%, 0.3);
   backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--glass-border);
+  transition: var(--transition-base);
+  margin: 1rem 0;
+}
+
+.empty:hover {
+  background: hsla(0, 0%, 100%, 0.5);
+  border-color: var(--primary-light);
 }
 
 .empty p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--gray-500);
-  font-weight: 500;
+  font-weight: 600;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {

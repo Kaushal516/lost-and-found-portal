@@ -3,9 +3,10 @@ import styles from "./Profile.module.css";
 import useAuth from "../../hooks/useAuth";
 import api from "../../utils/api";
 import { useLanguage } from "../../context/LanguageContext";
-import { User, Mail, Phone, Calendar, Camera, Package, Save, Settings, ShieldCheck, Eye, Trash2, AlertTriangle } from "lucide-react";
+import { User, Mail, Phone, Calendar, Camera, Package, Save, Settings, ShieldCheck, Eye, Trash2, AlertTriangle, Activity, Search } from "lucide-react";
 import LostPosts from "../MyPosts/LostPosts";
 import FoundPosts from "../MyPosts/FoundPosts";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const Profile = () => {
     const { t } = useLanguage();
@@ -14,6 +15,7 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [deletionPending, setDeletionPending] = useState(false);
+    const [activitySubTab, setActivitySubTab] = useState("lost");
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -243,9 +245,32 @@ const Profile = () => {
 
                     {activeTab === 'activity' && (
                         <div className={styles.tabPane}>
-                            <LostPosts items={myLostItems} />
-                            <hr className={styles.separator} />
-                            <FoundPosts items={myFoundItems} />
+                            <div className={styles.subTabs}>
+                                <button
+                                    className={activitySubTab === 'lost' ? styles.activeSubTab : styles.subTabBtn}
+                                    onClick={() => setActivitySubTab('lost')}
+                                >
+                                    <Activity size={16} />
+                                    <span>{t('profile.myLostReports') || "Lost Reports"}</span>
+                                    <span className={styles.countBadge}>{myLostItems.length}</span>
+                                </button>
+                                <button
+                                    className={activitySubTab === 'found' ? styles.activeSubTab : styles.subTabBtn}
+                                    onClick={() => setActivitySubTab('found')}
+                                >
+                                    <Search size={16} />
+                                    <span>{t('profile.myFoundPosts') || "Found Posts"}</span>
+                                    <span className={styles.countBadge}>{myFoundItems.length}</span>
+                                </button>
+                            </div>
+
+                            <div className={styles.subTabContent}>
+                                {activitySubTab === 'lost' ? (
+                                    <LostPosts items={myLostItems} hideHeader={true} />
+                                ) : (
+                                    <FoundPosts items={myFoundItems} hideHeader={true} />
+                                )}
+                            </div>
                         </div>
                     )}
 
@@ -292,40 +317,40 @@ const Profile = () => {
                                 <div className={styles.settingsGrid}>
                                     <div className={styles.formGroup}>
                                         <label>{t('settings.defaultView')}</label>
-                                        <select
+                                        <CustomSelect
                                             value={settingsData.defaultView}
+                                            options={[
+                                                { value: "grid", label: "Grid View" },
+                                                { value: "list", label: "List View" }
+                                            ]}
                                             onChange={(e) => handleSettingsUpdate({ defaultView: e.target.value })}
-                                            className={styles.select}
-                                        >
-                                            <option value="grid">Grid View</option>
-                                            <option value="list">List View</option>
-                                        </select>
+                                        />
                                     </div>
                                     <div className={styles.formGroup}>
                                         <label>{t('settings.defaultLanguage')}</label>
-                                        <select
+                                        <CustomSelect
                                             value={settingsData.defaultLanguage}
+                                            options={[
+                                                { value: "en", label: "English" },
+                                                { value: "hi", label: "Hindi" },
+                                                { value: "bn", label: "Bengali" },
+                                                { value: "te", label: "Telugu" },
+                                                { value: "mr", label: "Marathi" },
+                                                { value: "ta", label: "Tamil" }
+                                            ]}
                                             onChange={(e) => handleSettingsUpdate({ defaultLanguage: e.target.value })}
-                                            className={styles.select}
-                                        >
-                                            <option value="en">English</option>
-                                            <option value="hi">Hindi</option>
-                                            <option value="bn">Bengali</option>
-                                            <option value="te">Telugu</option>
-                                            <option value="mr">Marathi</option>
-                                            <option value="ta">Tamil</option>
-                                        </select>
+                                        />
                                     </div>
                                     <div className={styles.formGroup}>
                                         <label>{t('settings.theme')}</label>
-                                        <select
+                                        <CustomSelect
                                             value={settingsData.theme}
+                                            options={[
+                                                { value: "light", label: "Light Mode" },
+                                                { value: "dark", label: "Dark Mode" }
+                                            ]}
                                             onChange={(e) => handleSettingsUpdate({ theme: e.target.value })}
-                                            className={styles.select}
-                                        >
-                                            <option value="light">Light Mode</option>
-                                            <option value="dark">Dark Mode</option>
-                                        </select>
+                                        />
                                     </div>
                                 </div>
                             </div>

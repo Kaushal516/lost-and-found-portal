@@ -3,15 +3,16 @@
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  padding: 1.75rem;
+  padding: 1.5rem;
   width: 100%;
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-md);
   transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
   position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -20,17 +21,34 @@
   border-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.3);
 }
 
-.listCard {
-  flex-direction: row !important;
-  align-items: center;
-  padding: 1rem !important;
-  gap: 2rem !important;
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.listCard>div:first-child {
-  width: 150px;
-  height: 100px;
-  flex-shrink: 0;
+.imageWrapper {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  overflow: hidden;
+  background: var(--gray-100);
+}
+
+.listCard {
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 1.5rem 2rem !important;
+  gap: 2.5rem !important;
+}
+
+.listCard .imageWrapper {
+  width: 280px !important;
+  height: 190px !important;
+  aspect-ratio: auto !important;
+  flex-shrink: 0 !important;
+  border-radius: var(--radius-lg) !important;
 }
 
 .listCard .header {
@@ -38,9 +56,9 @@
 }
 
 .listCard .body {
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .listCard .footer {
@@ -56,7 +74,7 @@
 
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }

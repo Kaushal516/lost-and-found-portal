@@ -12,7 +12,7 @@ import styles from "./ItemCard.module.css";
 const FoundItemCard = ({ item, currentUserId, viewMode = "grid" }) => {
   const [showContact, setShowContact] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const navigate = useNavigate();
+  const [itemStatus, setItemStatus] = useState(item?.status || "active");
   const { isAdmin } = useAuth();
   const { t } = useLanguage();
 
@@ -20,7 +20,6 @@ const FoundItemCard = ({ item, currentUserId, viewMode = "grid" }) => {
 
   const posterId = item.postedBy?._id ?? item.postedBy;
   const isOwner = currentUserId && String(posterId) === String(currentUserId);
-  const [itemStatus, setItemStatus] = useState(item.status || "active");
 
   const handleClaim = async (e) => {
     e.stopPropagation();
@@ -42,50 +41,52 @@ const FoundItemCard = ({ item, currentUserId, viewMode = "grid" }) => {
 
   return (
     <div className={`${styles.card} ${viewMode === 'list' ? styles.listCard : ''}`} onClick={() => setShowDetails(true)} style={{ cursor: 'pointer' }}>
-      <div>
+      <div className={styles.imageWrapper}>
         {item.images?.length > 0 && (
           <ImageCarousel images={item.images} />
         )}
       </div>
 
-      <div className={styles.header}>
-        <h3 className={styles.title}>{item.title}</h3>
-        <span className={`${styles.status} ${itemStatus === "active"
-          ? styles.statusActive
-          : itemStatus === "In Process"
-            ? styles.statusProcess
-            : styles.statusResolved
-          }`}>
-          {formatFoundStatus(itemStatus, t)}
-        </span>
-      </div>
+      <div className={styles.contentWrapper}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>{item.title}</h3>
+          <span className={`${styles.status} ${itemStatus === "active"
+            ? styles.statusActive
+            : itemStatus === "In Process"
+              ? styles.statusProcess
+              : styles.statusResolved
+            }`}>
+            {formatFoundStatus(itemStatus, t)}
+          </span>
+        </div>
 
-      <div className={styles.body}>
-        <p><strong>{t('item.category')}:</strong> {t(`categories.${item.category}`)}</p>
-        <p><strong>{t('item.location')}:</strong> {item.location}</p>
-        <p>
-          <strong>{t('item.foundOn')}:</strong>{" "}
-          {new Date(item.dateFound).toLocaleDateString()}
-        </p>
-      </div>
+        <div className={styles.body}>
+          <p><strong>{t('item.category')}:</strong> {t(`categories.${item.category}`)}</p>
+          <p><strong>{t('item.location')}:</strong> {item.location}</p>
+          <p>
+            <strong>{t('item.foundOn')}:</strong>{" "}
+            {new Date(item.dateFound).toLocaleDateString()}
+          </p>
+        </div>
 
-      <div className={styles.footer}>
-        {!isAdmin && (
-          <button
-            className={styles.contactBtn}
-            onClick={handleClaim}
-            disabled={!isClaimable || isOwner}
-            title={
-              isOwner
-                ? t('item.ownerTooltip')
-                : isClaimable
-                  ? t('item.claimTooltip')
-                  : t('item.alreadyClaimedTooltip')
-            }
-          >
-            {isOwner ? t('item.yourPost') : btnText}
-          </button>
-        )}
+        <div className={styles.footer}>
+          {!isAdmin && (
+            <button
+              className={styles.contactBtn}
+              onClick={handleClaim}
+              disabled={!isClaimable || isOwner}
+              title={
+                isOwner
+                  ? t('item.yourPost')
+                  : isClaimable
+                    ? t('item.claimTooltip')
+                    : t('item.alreadyClaimedTooltip')
+              }
+            >
+              {isOwner ? t('item.yourPost') : btnText}
+            </button>
+          )}
+        </div>
       </div>
 
       {showContact && (

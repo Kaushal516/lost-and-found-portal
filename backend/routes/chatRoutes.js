@@ -8,7 +8,8 @@ import {
   getChats,
   markMessagesAsRead,
   getCommunityChats,
-  adminJoinChat
+  adminJoinChat,
+  startSupportChat
 } from "../controllers/chatController.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
@@ -19,6 +20,7 @@ import { upload } from "../middleware/uploadMiddleware.js";
 // All chat routes are protected
 router.get("/", protect, getChats);
 router.post("/", protect, accessChat);
+router.post("/support", protect, startSupportChat);
 router.post("/direct", protect, adminOnly, createDirectChat);
 router.get("/community", protect, adminOnly, getCommunityChats);
 router.post("/join", protect, adminOnly, adminJoinChat);

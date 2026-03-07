@@ -71,7 +71,7 @@
 input {
   width: 100%;
   padding: 0.8rem 1.1rem;
-  border: 2px solid var(--gray-100);
+  border: 2.5px solid var(--gray-200);
   border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 500;
@@ -139,6 +139,30 @@ button:disabled {
 .success {
   background: hsla(142, 70%, 45%, 0.1);
   color: var(--success);
+}
+
+.haveAccount {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
+.haveAccount span {
+  color: var(--primary);
+  font-weight: 800;
+  cursor: pointer;
+  margin-left: 0.25rem;
+  transition: var(--transition-base);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.haveAccount span:hover {
+  filter: brightness(1.2);
+  text-shadow: var(--shadow-glow);
 }
 
 @media (max-width: 640px) {

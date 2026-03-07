@@ -49,8 +49,20 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
         </div>
       )}
 
-      {chats.length === 0 && <p className={styles.noChats}>No active chats</p>}
-      {(isAdmin ? chats : chats.slice(0, 1)).map((chat) => (
+      {chats.length === 0 && !isAdmin && (
+        <div
+          className={`${styles.chatListItem} ${selectedChatId === "admin_support" ? styles.active : ""}`}
+          onClick={() => onSelectChat({ _id: "admin_support", isAdminSupport: true })}
+        >
+          <div className={styles.chatDetails}>
+            <span className={styles.chatName}>Admin (Support)</span>
+          </div>
+        </div>
+      )}
+
+      {chats.length === 0 && isAdmin && <p className={styles.noChats}>No active chats</p>}
+
+      {chats.map((chat) => (
         <div
           key={chat._id}
           className={`${styles.chatListItem} ${selectedChatId === chat._id ? styles.active : ""}`}
@@ -66,14 +78,33 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                   return userPart?.username || "Unknown User";
                 }
 
-                // For User: Show "Admin"
-                return "Admin";
+                // For User: Show "Admin" if it's a direct chat with admin
+                if (!chat.item) return "Admin (Support)";
+
+                // Otherwise show the other user
+                const other = chat.participants.find(p => p._id !== user?.id);
+                return other?.username || "Unknown User";
               })()}
             </span>
           </div>
           {chat.unreadCount > 0 && <span className={styles.unreadBadge}>{chat.unreadCount}</span>}
         </div>
       ))}
+
+      {/* If user has chats but none are with Admin, still show Admin entry? 
+          Actually, the request says "keep the admin chat always". 
+          Let's ensure it's ALWAYS there if not an admin.
+      */}
+      {!isAdmin && chats.length > 0 && !chats.some(c => !c.item) && (
+        <div
+          className={`${styles.chatListItem} ${selectedChatId === "admin_support" ? styles.active : ""}`}
+          onClick={() => onSelectChat({ _id: "admin_support", isAdminSupport: true })}
+        >
+          <div className={styles.chatDetails}>
+            <span className={styles.chatName}>Admin (Support)</span>
+          </div>
+        </div>
+      )}
       {
         isAdmin && (
           <button

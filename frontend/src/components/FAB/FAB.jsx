@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { Plus, Megaphone, Search, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./FAB.module.css";
 import useAuth from "../../hooks/useAuth";
 
 const FAB = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { isAuthenticated } = useAuth();
+
+    // Hide FAB on admin routes
+    const isAdminRoute = location.pathname.startsWith("/admin") || location.pathname === "/dashboard";
+
+    if (isAdminRoute) return null;
 
     const handleAction = (path) => {
         if (!isAuthenticated) {

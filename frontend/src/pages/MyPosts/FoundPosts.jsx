@@ -1,10 +1,10 @@
 import styles from "./MyPosts.module.css";
 import StatusTimeline from "../../components/StatusTimeline/StatusTimeline";
 
-const FoundPosts = ({ items }) => {
+const FoundPosts = ({ items, hideHeader = false }) => {
   return (
     <div className={styles.section}>
-      <h3>Your Found Posts</h3>
+      {!hideHeader && <h3>Your Found Posts</h3>}
 
       {items.length === 0 ? (
         <div className={styles.empty}>

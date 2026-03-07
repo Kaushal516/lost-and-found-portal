@@ -161,6 +161,51 @@ export const createDirectChat = async (req, res) => {
   }
 };
 
+/**
+ * CREATE OR GET SUPPORT CHAT (USER <-> ADMIN)
+ * - User clicks "Admin" on Chat Sidebar
+ */
+export const startSupportChat = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find any admin to handle the support chat
+    const admin = await Admin.findOne();
+    if (!admin) {
+      return res.status(500).json({ message: "No admin available" });
+    }
+
+    // Check if a DIRECT chat (item: null) already exists between this user and this admin
+    let chat = await Chat.findOne({
+      participants: { $in: [userId] },
+      admin: admin._id,
+      item: null
+    })
+      .populate("participants", "username email")
+      .populate("admin", "username email");
+
+    if (chat) {
+      return res.json(chat);
+    }
+
+    // Create new direct chat
+    chat = await Chat.create({
+      item: null,
+      itemModel: null,
+      participants: [userId],
+      admin: admin._id
+    });
+
+    const fullChat = await Chat.findById(chat._id)
+      .populate("participants", "username email")
+      .populate("admin", "username email");
+
+    return res.status(201).json(fullChat);
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 /**
  * CREATE OR GET CHAT

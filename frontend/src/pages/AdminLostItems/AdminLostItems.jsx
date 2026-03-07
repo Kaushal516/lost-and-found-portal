@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../utils/api";
 import ImageCarousel from "../../components/ImageCarousel/ImageCarousel";
+import { LayoutGrid, List } from "lucide-react";
 import styles from "./AdminLostItems.module.css";
 
 const AdminLostItems = () => {
@@ -11,6 +12,7 @@ const AdminLostItems = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [viewMode, setViewMode] = useState("list"); // grid or list
     const navigate = useNavigate();
 
     // Search & Filter State
@@ -101,12 +103,30 @@ const AdminLostItems = () => {
         <div className={styles.container}>
             <div className={styles.header}>
                 <h2>Manage Lost Reports</h2>
-                <button
-                    className={styles.postBtn}
-                    onClick={() => navigate("/lost/new")}
-                >
-                    Post Lost Item
-                </button>
+                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                    <div className={styles.viewToggle}>
+                        <button
+                            className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.toggleActive : ''}`}
+                            onClick={() => setViewMode('grid')}
+                            title="Grid View"
+                        >
+                            <LayoutGrid size={18} />
+                        </button>
+                        <button
+                            className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.toggleActive : ''}`}
+                            onClick={() => setViewMode('list')}
+                            title="List View"
+                        >
+                            <List size={18} />
+                        </button>
+                    </div>
+                    <button
+                        className={styles.postBtn}
+                        onClick={() => navigate("/lost/new")}
+                    >
+                        Post Lost Item
+                    </button>
+                </div>
             </div>
 
             {/* Search & Filter Section */}
@@ -175,9 +195,9 @@ const AdminLostItems = () => {
             ) : sortedItems.length === 0 ? (
                 <p>No lost reports match your criteria.</p>
             ) : (
-                <div className={styles.list}>
+                <div className={`${styles.list} ${viewMode === 'grid' ? styles.gridView : ''}`}>
                     {sortedItems.map((item) => (
-                        <div key={item._id} className={styles.card}>
+                        <div key={item._id} className={`${styles.card} ${viewMode === 'grid' ? styles.gridCard : ''}`}>
                             <div className={styles.imageContainer}>
                                 {item.images && item.images.length > 0 ? (
                                     <ImageCarousel images={item.images} />

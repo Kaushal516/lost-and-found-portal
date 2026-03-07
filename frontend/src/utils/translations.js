@@ -66,6 +66,8 @@ export const translations = {
             changePicture: "Change Picture",
             overview: "Overview",
             myActivity: "My Activity",
+            myLostReports: "My Lost Reports",
+            myFoundPosts: "My Found Posts",
             infoTitle: "Profile Information",
             editProfile: "Edit Profile",
             firstName: "First Name",
@@ -183,7 +185,6 @@ export const translations = {
         contact: {
             title: "Contact Details",
             emailNotAvailable: "Email not available",
-            emailNotAvailable: "Email not available",
             phoneNotAvailable: "Phone not available"
         },
         auth: {
@@ -296,6 +297,8 @@ export const translations = {
             changePicture: "तस्वीर बदलें",
             overview: "अवलोकन",
             myActivity: "मेरी गतिविधि",
+            myLostReports: "मेरी खोई हुई रिपोर्ट",
+            myFoundPosts: "मेरे पाए गए पोस्ट",
             infoTitle: "प्रोफ़ाइल जानकारी",
             editProfile: "प्रोफ़ाइल संपादित करें",
             firstName: "पहला नाम",

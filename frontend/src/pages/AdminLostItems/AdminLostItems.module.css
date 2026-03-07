@@ -17,6 +17,40 @@
     }
 }
 
+.viewToggle {
+    display: flex;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: 100px;
+    gap: 4px;
+    border: 1px solid var(--gray-200);
+}
+
+.toggleBtn {
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--gray-500);
+}
+
+.toggleBtn:hover:not(.toggleActive) {
+    background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05);
+    color: var(--primary);
+}
+
+.toggleActive {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.3);
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -114,9 +148,15 @@
 }
 
 .list {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
+}
+
+.gridView {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 2rem !important;
 }
 
 .card {
@@ -128,9 +168,33 @@
     box-shadow: var(--shadow-md);
     display: flex;
     gap: 2rem;
-    align-items: flex-start;
+    align-items: stretch;
     border: 1px solid var(--glass-border);
     transition: var(--transition-smooth);
+}
+
+.gridCard {
+    flex-direction: column !important;
+    padding: 1.5rem !important;
+    gap: 1.25rem !important;
+}
+
+.gridCard .imageContainer {
+    width: 100% !important;
+    height: 180px !important;
+}
+
+.gridCard .content {
+    gap: 1rem;
+}
+
+.gridCard .actions {
+    margin-top: auto;
+    width: 100%;
+}
+
+.gridCard .actions button {
+    flex: 1;
 }
 
 .card:hover {

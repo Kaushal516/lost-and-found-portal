@@ -169,14 +169,25 @@ const Chat = () => {
       <aside className={styles.sidebar}>
         <h3>{t('chat.title')}</h3>
         <ChatList
-          onSelectChat={(chat) => {
-            setSelectedChat(chat);
-            const fetchMsgs = async () => {
-              const msgs = await api.get(`/chat/${chat._id}`);
-              setMessages(msgs.data);
-              // Mark as read explicitly here too potentially, but useEffect covers it
-            };
-            fetchMsgs();
+          onSelectChat={async (chat) => {
+            if (chat.isAdminSupport) {
+              try {
+                const res = await api.post("/chat/support");
+                setSelectedChat(res.data);
+                const msgs = await api.get(`/chat/${res.data._id}`);
+                setMessages(msgs.data);
+              } catch (err) {
+                console.error("Failed to start support chat", err);
+              }
+            } else {
+              setSelectedChat(chat);
+              try {
+                const msgs = await api.get(`/chat/${chat._id}`);
+                setMessages(msgs.data);
+              } catch (err) {
+                console.error("Failed to fetch messages", err);
+              }
+            }
           }}
           selectedChatId={selectedChat?._id}
         />

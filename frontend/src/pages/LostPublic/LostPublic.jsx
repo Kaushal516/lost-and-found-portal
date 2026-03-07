@@ -3,7 +3,8 @@ import api from "../../utils/api";
 import useAuth from "../../hooks/useAuth";
 import LostItemCard from "../../components/ItemCard/LostItemCard";
 import styles from "./LostPublic.module.css";
-import { Search, Filter, Calendar } from "lucide-react";
+import { Search, Filter, Calendar, LayoutGrid, List } from "lucide-react";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import { useLanguage } from "../../context/LanguageContext";
 
 const LostPublic = () => {
@@ -11,6 +12,7 @@ const LostPublic = () => {
   const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid"); // grid or list
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -87,9 +89,27 @@ const LostPublic = () => {
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
-        <h2 className={styles.heading}>{t('search.lostReportsTitle')}</h2>
-        <div className={styles.resultCount}>
-          {sortedItems.length} {t('search.results')}
+        <div>
+          <h2 className={styles.heading}>{t('search.lostReportsTitle')}</h2>
+          <div className={styles.resultCount}>
+            {sortedItems.length} {t('search.results')}
+          </div>
+        </div>
+        <div className={styles.viewToggle}>
+          <button
+            className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.toggleActive : ''}`}
+            onClick={() => setViewMode('grid')}
+            title={t('search.grid')}
+          >
+            <LayoutGrid size={18} />
+          </button>
+          <button
+            className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.toggleActive : ''}`}
+            onClick={() => setViewMode('list')}
+            title={t('search.list')}
+          >
+            <List size={18} />
+          </button>
         </div>
       </div>
 
@@ -117,43 +137,47 @@ const LostPublic = () => {
 
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>{t('search.sortBy')}</label>
-            <select
+            <CustomSelect
               value={sortBy}
+              options={[
+                { value: "newest", label: t('search.newest') },
+                { value: "oldest", label: t('search.oldest') },
+                { value: "title-asc", label: t('search.titleAsc') },
+                { value: "title-desc", label: t('search.titleDesc') }
+              ]}
               onChange={(e) => setSortBy(e.target.value)}
-              className={styles.sidebarSelect}
-            >
-              <option value="newest">{t('search.newest')}</option>
-              <option value="oldest">{t('search.oldest')}</option>
-              <option value="title-asc">{t('search.titleAsc')}</option>
-              <option value="title-desc">{t('search.titleDesc')}</option>
-            </select>
+            />
           </div>
 
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>{t('search.status')}</label>
-            <select
+            <CustomSelect
               value={statusFilter}
+              options={[
+                { value: "", label: t('search.allStatus') },
+                { value: "active", label: t('status.active') },
+                { value: "resolved", label: t('status.resolved') }
+              ]}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className={styles.sidebarSelect}
-            >
-              <option value="">{t('search.anyStatus')}</option>
-              <option value="active">{t('search.active')}</option>
-              <option value="resolved">{t('search.resolved')}</option>
-            </select>
+            />
           </div>
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>{t('search.categories')}</label>
-            <select
+            <label className={styles.filterLabel}>{t('search.category')}</label>
+            <CustomSelect
               value={category}
+              options={[
+                { value: "", label: t('search.allCategories') },
+                { value: "Electronics", label: t('categories.Electronics') },
+                { value: "Documents", label: t('categories.Documents') },
+                { value: "Clothing", label: t('categories.Clothing') },
+                { value: "Accessories", label: t('categories.Accessories') },
+                { value: "Personal Items", label: t('categories.Personal Items') },
+                { value: "Pets", label: t('categories.Pets') },
+                { value: "Other", label: t('categories.Other') }
+              ]}
               onChange={(e) => setCategory(e.target.value)}
-              className={styles.sidebarSelect}
-            >
-              <option value="">{t('search.allCategories')}</option>
-              {availableCategories.map(cat => (
-                <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className={styles.filterGroup}>
@@ -200,9 +224,9 @@ const LostPublic = () => {
               <button className={styles.resetBtnLg} onClick={resetFilters}>{t('search.reset')}</button>
             </div>
           ) : (
-            <div className={styles.grid}>
+            <div className={`${styles.grid} ${viewMode === 'list' ? styles.listView : ''}`}>
               {sortedItems.map(item => (
-                <LostItemCard key={item._id} item={item} currentUserId={user?.id} />
+                <LostItemCard key={item._id} item={item} currentUserId={user?.id} viewMode={viewMode} />
               ))}
             </div>
           )}

@@ -1,0 +1,101 @@
+.selectContainer {
+    position: relative;
+    width: 100%;
+}
+
+.selectBox {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    min-height: 48px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.selectBox:hover {
+    border-color: var(--primary);
+    background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.02);
+}
+
+.selectBoxActive {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.placeholder {
+    color: var(--text-muted);
+}
+
+.arrow {
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+.arrowRotate {
+    transform: rotate(180deg);
+    color: var(--primary);
+}
+
+.dropdownList {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    /* SUPER ROUNDED */
+    padding: 0.5rem;
+    list-style: none;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdownItem {
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition-base);
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.dropdownItem:hover {
+    background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.08);
+    color: var(--primary);
+    padding-left: 1.25rem;
+}
+
+.itemActive {
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+/* Dark Mode specific tweaks if needed */
+:global(.dark) .dropdownList {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}

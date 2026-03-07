@@ -65,7 +65,7 @@
 input {
   width: 100%;
   padding: 0.875rem 1.25rem;
-  border: 2px solid var(--gray-100);
+  border: 2.5px solid var(--gray-200);
   border-radius: var(--radius-md);
   font-size: 1rem;
   font-weight: 500;
@@ -172,6 +172,29 @@ button:disabled {
   font-weight: 700;
   text-decoration: none;
   margin-left: 0.25rem;
+}
+
+.noAccount {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
+.noAccount span {
+  color: var(--primary);
+  font-weight: 800;
+  cursor: pointer;
+  margin-left: 0.25rem;
+  transition: var(--transition-base);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.noAccount span:hover {
+  filter: brightness(1.2);
+  text-shadow: var(--shadow-glow);
 }
 
 @media (max-width: 480px) {

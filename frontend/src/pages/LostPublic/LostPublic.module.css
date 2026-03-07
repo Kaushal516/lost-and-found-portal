@@ -8,7 +8,7 @@
 .pageHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 2rem;
   border-bottom: 2px solid var(--gray-200);
   padding-bottom: 1rem;
@@ -121,15 +121,7 @@
 }
 
 .sidebarSelect {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  background: var(--gray-50);
-  color: var(--gray-800);
-  transition: var(--transition-base);
-  cursor: pointer;
+  /* Inherits from global select */
 }
 
 .sidebarInput:focus,
@@ -302,6 +294,45 @@
 .resetBtnLg:hover {
   filter: brightness(1.1);
   box-shadow: var(--shadow-md);
+}
+
+.viewToggle {
+  display: flex;
+  background: var(--gray-100);
+  padding: 4px;
+  border-radius: 100px;
+  gap: 4px;
+  border: 1px solid var(--gray-200);
+}
+
+.toggleBtn {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--gray-500);
+}
+
+.toggleBtn:hover:not(.toggleActive) {
+  background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05);
+  color: var(--primary);
+}
+
+.toggleActive {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.3);
+}
+
+.listView {
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Responsive */
